@@ -143,6 +143,7 @@
     if ([segue.identifier isEqualToString:@"AddCity"]) {
         BNRAddViewController *PickerViewController = segue.destinationViewController;
         PickerViewController.delegate = self;
+        PickerViewController.detailViewController=self.detailViewController;
     }
 }
 

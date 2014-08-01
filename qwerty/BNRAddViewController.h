@@ -7,9 +7,12 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <MapKit/MapKit.h>
+#import <CoreLocation/CoreLocation.h>
 
 @class BNRCity;
 @class BNRAddViewController;
+@class BNRDetailViewController;
 
 @protocol BNRAddViewControllerDelegate <NSObject>
 
@@ -18,6 +21,8 @@
 @end
 
 @interface BNRAddViewController : UIViewController
+
+@property (strong, nonatomic) BNRDetailViewController *detailViewController;
 
 @property (nonatomic, weak) id <BNRAddViewControllerDelegate> delegate;
 @property (weak, nonatomic) IBOutlet UISearchBar *search;
