@@ -183,6 +183,7 @@
     for(int i=0; i<=[pathes count]-2; i++)
     {
         MKDirectionsRequest *directionRequest=[MKDirectionsRequest new];
+        
         directionRequest.source=[[MKMapItem alloc] initWithPlacemark:[[MKPlacemark alloc] initWithPlacemark:self.placemarks[i][0]]];
         directionRequest.destination=[[MKMapItem alloc] initWithPlacemark:[[MKPlacemark alloc] initWithPlacemark:self.placemarks[i+1][0]]];
         MKDirections *directions = [[MKDirections alloc] initWithRequest:directionRequest];
