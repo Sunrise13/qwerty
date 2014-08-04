@@ -144,8 +144,7 @@
 -(void)getGeolocations
 {
     NSLog(@"In getGeolocation");
-    NSArray * pathes=[self.master.table indexPathsForSelectedRows];
-    NSInteger pathes_row=[pathes count]-1;
+     NSArray * pathes=[self.master.table indexPathsForSelectedRows];
     for(int i=0; i<[pathes count]; i++)
     {
        
