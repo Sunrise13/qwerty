@@ -390,14 +390,15 @@
          {
              NSLog(@"Error!");
          }
+    
          
      }];
     
     
-
-    touchPin.coordinate = location;
-    touchPin.title = newTitle;
-    [self.map addAnnotation:touchPin];
+//залишає (відмальовує знову) пін та карті
+ //  touchPin.coordinate = location;
+ //  touchPin.title = newTitle;
+ //  [self.map addAnnotation:touchPin];
     
     //NSLog(@"Location found from Map: %f %f",location.latitude,location.longitude);
     

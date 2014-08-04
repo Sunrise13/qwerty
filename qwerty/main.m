@@ -13,8 +13,7 @@
 int main(int argc, char * argv[])
 {
     @autoreleasepool {
-        NSLog(@"YAYAYAYAY!");
-        NSLog(@"rtyuimn");
+        NSLog(@"Something new!");
         return UIApplicationMain(argc, argv, nil, NSStringFromClass([BNRAppDelegate class]));
     }
 }
