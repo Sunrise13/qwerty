@@ -17,7 +17,7 @@
 @property (weak, nonatomic) IBOutlet MKMapView *map;
 @property (strong, nonatomic) NSMutableArray *pinArr;
 @property (weak, nonatomic) BNRMasterViewController * master;
-@property (strong, nonatomic)  __block NSMutableArray * placemarks;
+@property (strong, nonatomic)  __block NSMutableDictionary * placemarks;
 @property (strong, nonatomic) NSMutableArray *pinNameArr;
 @property (strong, nonatomic) MKRoute *routeDetails;
 @property (nonatomic,strong) CLGeocoder *someGeocoder;

@@ -7,7 +7,6 @@
 //
 
 #import "BNRMasterViewController.h"
-
 #import "BNRDetailViewController.h"
 
 @interface BNRMasterViewController () {
@@ -30,15 +29,11 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-	// Do any additional setup after loading the view, typically from a nib.
-   // self.navigationItem.leftBarButtonItem = self.editButtonItem;
-
-    //UIBarButtonItem *addButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(insertNewObject:)];
-    //self.navigationItem.rightBarButtonItem = addButton;
     self.detailViewController = (BNRDetailViewController *)[[self.splitViewController.viewControllers lastObject] topViewController];
     
     NSURL *url = [[NSBundle mainBundle] URLForResource:@"PropertyList" withExtension:@"plist"];
     self.arr = [NSMutableArray arrayWithContentsOfURL:url];
+    [self.table setSeparatorStyle:UITableViewCellSeparatorStyleNone];
    // _table.allowsMultipleSelection=YES;
     
     
@@ -101,22 +96,6 @@
     }
 }
 
-/*
-// Override to support rearranging the table view.
-- (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath
-{
-}
-*/
-
-/*
-// Override to support conditional rearranging of the table view.
-- (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    // Return NO if you do not want the item to be re-orderable.
-    return YES;
-}
-*/
-
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
@@ -141,18 +120,18 @@
     }
     
     if ([segue.identifier isEqualToString:@"AddCity"]) {
-        BNRAddViewController *PickerViewController = segue.destinationViewController;
-        PickerViewController.delegate = self;
-        PickerViewController.detailViewController=self.detailViewController;
+        BNRAddViewController *PController = segue.destinationViewController;
+        PController.delegate = self;
+        PController.detailViewController = self.detailViewController;
     }
 }
 
-- (IBAction)selectItems:(UIBarButtonItem *)sender
+- (IBAction)selectItems:(UISegmentedControl *)sender
 {
-    if([sender.title isEqual:@"Select"])
+    if([sender selectedSegmentIndex]==1)
     {
         self.table.allowsMultipleSelection=YES;
-        sender.title=@"Done";
+       // sender.title=@"Done";
         [[NSNotificationCenter defaultCenter] postNotificationName:@"prepareForMulti" object:self userInfo:nil];
     }
            
@@ -160,8 +139,24 @@
 
 - (void)AddViewController:(BNRAddViewController *)controller didAddCity:(NSDictionary *)city
 {
-    [_arr addObject:city];
+    BOOL ok = true;
+    for(NSDictionary*ar in _arr)
+    {
+        if([ar[@"city"]isEqualToString:city[@"city"]])
+            ok = false;
+    }
+    
+    if(![[controller.search text] isEqual: @""] && ok)
+    {
+        [_arr addObject:city];
+        [self.tableView reloadData];
+        [self saveToFile];
+    }
 }
 
+-(void)saveToFile
+{
+    
+}
 
 @end
