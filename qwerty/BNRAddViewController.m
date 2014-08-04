@@ -15,6 +15,8 @@
 
 @implementation BNRAddViewController
 
+
+
 CLPlacemark *thePlacemark;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
@@ -30,12 +32,24 @@ CLPlacemark *thePlacemark;
 {
     [super viewDidLoad];
 	// Do any additional setup after loading the view.
-    
     self.detailViewController.longPressGestureRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(handleLongPressGestures:)];
     self.detailViewController.longPressGestureRecognizer.numberOfTouchesRequired = 1;
     self.detailViewController.longPressGestureRecognizer.allowableMovement = 50.0;
     self.detailViewController.longPressGestureRecognizer.minimumPressDuration = 1.5;
     [self.detailViewController.view addGestureRecognizer:self.detailViewController.longPressGestureRecognizer];
+    
+}
+
+-(void)viewDidDisappear:(BOOL)animated
+{
+    [self.detailViewController.view removeGestureRecognizer:self.detailViewController.longPressGestureRecognizer];
+}
+
+-(void)viewDidAppear:(BOOL)animated
+{
+    
+  
+    
 }
 
 - (void)didReceiveMemoryWarning
@@ -113,7 +127,7 @@ CLPlacemark *thePlacemark;
 //selector for long pressing on the map
 - (void) handleLongPressGestures:(UILongPressGestureRecognizer *)gestureRecognizer
 {
-        
+    if(self)
     if (gestureRecognizer.state != UIGestureRecognizerStateBegan)
         return;
     NSMutableString * newTitle = [NSMutableString new];

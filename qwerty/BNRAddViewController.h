@@ -31,4 +31,5 @@
 @property (weak, nonatomic) IBOutlet UILabel *latitudeLabel;
 @property (strong, nonatomic)  __block NSMutableArray * placemarks;
 
+
 @end
