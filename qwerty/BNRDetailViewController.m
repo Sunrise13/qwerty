@@ -303,4 +303,91 @@
 }
 
 
+
+- (void) alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    NSString *buttonTitle = [alertView buttonTitleAtIndex:buttonIndex];
+    if ([buttonTitle isEqualToString:@"Yes"])
+    {
+        NSLog(@"How to store new data???");
+    }
+    else if ([buttonTitle isEqualToString:@"No"])
+    {
+        NSLog(@"Nonononono");
+    }
+}
+
+//selector for long pressing on the map
+- (void) handleLongPressGestures:(UILongPressGestureRecognizer *)gestureRecognizer
+{
+    if (gestureRecognizer.state != UIGestureRecognizerStateBegan)
+        return;
+    NSMutableString * newTitle = [NSMutableString new];
+
+    __block MKPointAnnotation *touchPin = [[ MKPointAnnotation alloc] init];
+    
+    CGPoint touchPoint = [gestureRecognizer locationInView:self.map];
+    CLLocationCoordinate2D location =
+    [self.map convertPoint:touchPoint toCoordinateFromView:self.map];
+    
+    CLLocation * locClass = [[CLLocation alloc] initWithLatitude:location.latitude longitude:location.longitude];
+    
+    self.someGeocoder = [[CLGeocoder alloc] init] ;
+    [self.someGeocoder reverseGeocodeLocation: locClass completionHandler:^(NSArray *placemarks, NSError *error)
+     {
+         if (error == nil && [placemarks count]>0)
+         {
+             CLPlacemark *placemark = [placemarks objectAtIndex:0];
+             
+             //отримуєм місто
+             [newTitle appendString: placemark.locality];
+
+
+             
+             NSArray *ann = [self.map annotations];
+             
+             //приколи з видаленням останнього піна і створенням його знову
+             [self.map removeAnnotation:[ann lastObject]];
+             // [self.map addAnnotation:touchPin];
+             
+             touchPin = [[ MKPointAnnotation alloc] init];
+             touchPin.coordinate = location;
+             touchPin.title = newTitle;
+             [self.map addAnnotation:touchPin]; //на карті в місці натиснення відображається стандартний червоний пін
+             
+             UIAlertView *addNewPinView = [[UIAlertView alloc] initWithTitle:@"Do you want to add this city to your collection?" message: newTitle delegate:self cancelButtonTitle:@"No" otherButtonTitles:@"Yes", nil];
+             
+             [addNewPinView show];
+             
+             //Сюди можна додати якийсь функціонал, який додає
+             // координати в новий айтем або - тепер уже  - в бд
+             //location.latitude,location.longitude
+             
+             
+             // NSLog(@"%@",placemark.locality);
+         }
+         else if ((error == nil) && [placemarks count]==0)
+         {
+             NSLog(@"No results");
+             
+         }
+         else if(error!=nil)
+         {
+             NSLog(@"Error!");
+         }
+    
+         
+     }];
+    
+    
+//залишає (відмальовує знову) пін та карті
+ //  touchPin.coordinate = location;
+ //  touchPin.title = newTitle;
+ //  [self.map addAnnotation:touchPin];
+    
+    //NSLog(@"Location found from Map: %f %f",location.latitude,location.longitude);
+    
+}
+
+
 @end
