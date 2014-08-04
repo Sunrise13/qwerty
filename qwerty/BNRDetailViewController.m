@@ -210,14 +210,33 @@
                                                  name:@"navigateTo"
                                                object:nil];
     
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(closeApp:)
+                                                 name:@"UIApplicationDidEnterBackgroundNotification"
+                                               object:nil];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(multiNavigation:) name:@"multiNavigation" object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(prepareForMulti:)name:@"prepareForMulti" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(multiNavigation:)
+                                                 name:@"multiNavigation"
+                                               object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(prepareForMulti:)
+                                                 name:@"prepareForMulti"
+                                               object:nil];
     
     self.placemarks=[NSMutableDictionary new];
     self.pinNameArr=[NSMutableArray new];
     self.map.showsUserLocation = YES;
-    
+}
+
+
+-(void)closeApp:(NSNotificationCenter *)n
+{
+   // NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+   // NSString *documentsDirectory = [paths objectAtIndex:0];
+//    NSString *filePath = [documentsDirectory stringByAppendingPathComponent:@"PropertyList.plist"];
+   NSString * filePath  = @"PropertyList.plist";
+   [_master.arr writeToFile:filePath atomically:YES];
 }
 
 - (void)prepareForMulti:(NSNotificationCenter *)n
