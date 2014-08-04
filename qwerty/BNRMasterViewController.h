@@ -17,5 +17,8 @@
 @property (weak, nonatomic) IBOutlet UITableView *table;
 @property (nonatomic, strong) NSMutableArray *arr;
 
+
+-(void)saveToFile;
+
 @end
 

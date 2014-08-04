@@ -20,7 +20,7 @@
 
 @end
 
-@interface BNRAddViewController : UIViewController
+@interface BNRAddViewController : UIViewController <UISplitViewControllerDelegate, MKMapViewDelegate, UIAlertViewDelegate>
 
 @property (strong, nonatomic) BNRDetailViewController *detailViewController;
 
@@ -29,5 +29,6 @@
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *adButton;
 @property (weak, nonatomic) IBOutlet UILabel *longitudeLabel;
 @property (weak, nonatomic) IBOutlet UILabel *latitudeLabel;
+@property (strong, nonatomic)  __block NSMutableArray * placemarks;
 
 @end

@@ -144,7 +144,7 @@
 -(void)getGeolocations
 {
     NSLog(@"In getGeolocation");
-     NSArray * pathes=[self.master.table indexPathsForSelectedRows];
+    NSArray * pathes=[self.master.table indexPathsForSelectedRows];
     NSInteger pathes_row=[pathes count]-1;
     for(int i=0; i<[pathes count]; i++)
     {
@@ -166,10 +166,7 @@
                     if([self.placemarks count]==[pathes count])
                         [self calculateAndShowRoutes];
                 }];
-      
-        //NSLog(@"%@",((CLPlacemark *)self.placemarks[i]).country);
-        
-            
+                
         
     }
     
@@ -195,20 +192,7 @@
                 _routeDetails = response.routes.lastObject;
                 _map.delegate=self;
                 [_map addOverlay:_routeDetails.polyline];
-                
-                
-                //self.destinationLabel.text = [placemark.addressDictionary objectForKey:@"Street"];
-                // self.distanceLabel.text = [NSString stringWithFormat:@"%0.1f Miles", routeDetails.distance/1609.344];
-                // self.transportLabel.text = [NSString stringWithFormat:@"%u" ,routeDetails.transportType];
-                //self.allSteps = @"";
-                //for (int i = 0; i < routeDetails.steps.count; i++) {
-                //  MKRouteStep *step = [routeDetails.steps objectAtIndex:i];
-                //  NSString *newStep = step.instructions;
-                //  self.allSteps = [self.allSteps stringByAppendingString:newStep];
-                // self.allSteps = [self.allSteps stringByAppendingString:@"\n\n"];
-                // self.steps.text = self.allSteps;
-                // }
-            }
+                }
         }];
     }
     
@@ -235,23 +219,6 @@
     self.pinNameArr=[NSMutableArray new];
     self.map.showsUserLocation = YES;
     
-    //CLLocationCoordinate2D coord[4];
-   // coord[0] = CLLocationCoordinate2DMake(41.000512, -109.050116);
-    //coord[1] = CLLocationCoordinate2DMake(41.002371, -102.052066);
-    //coord[2] = CLLocationCoordinate2DMake(36.993076, -102.041981);
-    //coord[3] = CLLocationCoordinate2DMake(36.99892, -109.045267);
-    //
-   // MKPolygon *poligon = [MKPolygon polygonWithCoordinates:coord
-                                                  //   count:4];
-    //poligon.title = @"Colorado";
-    //[self.map addOverlay:poligon];
-    
-    self.longPressGestureRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(handleLongPressGestures:)];
-    
-    self.longPressGestureRecognizer.numberOfTouchesRequired = 1;
-    self.longPressGestureRecognizer.allowableMovement = 50.0;
-    self.longPressGestureRecognizer.minimumPressDuration = 1.5;
-    [self.view addGestureRecognizer:self.longPressGestureRecognizer];
 }
 
 - (void)prepareForMulti:(NSNotificationCenter *)n
@@ -315,73 +282,6 @@
     routeLineRenderer.strokeColor = [UIColor redColor];
     routeLineRenderer.lineWidth = 5;
     return routeLineRenderer;
-}
-
-//selector for long pressing on the map
-- (void) handleLongPressGestures:(UILongPressGestureRecognizer *)gestureRecognizer
-{
-    if (gestureRecognizer.state != UIGestureRecognizerStateBegan)
-        return;
-    NSMutableString * newTitle = [NSMutableString new];
-
-    __block MKPointAnnotation *touchPin = [[ MKPointAnnotation alloc] init];
-    
-    CGPoint touchPoint = [gestureRecognizer locationInView:self.map];
-    CLLocationCoordinate2D location =
-    [self.map convertPoint:touchPoint toCoordinateFromView:self.map];
-    
-    CLLocation * locClass = [[CLLocation alloc] initWithLatitude:location.latitude longitude:location.longitude];
-    
-    self.someGeocoder = [[CLGeocoder alloc] init] ;
-    [self.someGeocoder reverseGeocodeLocation: locClass completionHandler:^(NSArray *placemarks, NSError *error)
-     {
-         if (error == nil && [placemarks count]>0)
-         {
-             CLPlacemark *placemark = [placemarks objectAtIndex:0];
-             
-             //отримуєм місто
-             [newTitle appendString: placemark.locality];
-
-             //touchPin.title = newTitle;
-             
-             NSArray *ann = [self.map annotations];
-             
-             //приколи з видаленням останнього піна і створенням його знову
-             [self.map removeAnnotation:[ann lastObject]];
-             // [self.map addAnnotation:touchPin];
-             
-             touchPin = [[ MKPointAnnotation alloc] init];
-             touchPin.coordinate = location;
-             touchPin.title = newTitle;
-             [self.map addAnnotation:touchPin]; //на карті в місці натиснення відображається стандартний червоний пін
-             
-             //Сюди можна додати якийсь функціонал, який додає
-             // координати в новий айтем або - тепер уже  - в бд
-             //location.latitude,location.longitude
-             
-             
-             // NSLog(@"%@",placemark.locality);
-         }
-         else if ((error == nil) && [placemarks count]==0)
-         {
-             NSLog(@"No results");
-             
-         }
-         else if(error!=nil)
-         {
-             NSLog(@"Error!");
-         }
-         
-     }];
-    
-    
-
-    touchPin.coordinate = location;
-    touchPin.title = newTitle;
-    [self.map addAnnotation:touchPin];
-    
-    //NSLog(@"Location found from Map: %f %f",location.latitude,location.longitude);
-    
 }
 
 
