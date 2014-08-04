@@ -33,6 +33,7 @@
     
     NSURL *url = [[NSBundle mainBundle] URLForResource:@"PropertyList" withExtension:@"plist"];
     self.arr = [NSMutableArray arrayWithContentsOfURL:url];
+    [self.table setSeparatorStyle:UITableViewCellSeparatorStyleNone];
    // _table.allowsMultipleSelection=YES;
     
     
@@ -95,22 +96,6 @@
     }
 }
 
-/*
-// Override to support rearranging the table view.
-- (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath
-{
-}
-*/
-
-/*
-// Override to support conditional rearranging of the table view.
-- (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    // Return NO if you do not want the item to be re-orderable.
-    return YES;
-}
-*/
-
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
@@ -141,12 +126,12 @@
     }
 }
 
-- (IBAction)selectItems:(UIBarButtonItem *)sender
+- (IBAction)selectItems:(UISegmentedControl *)sender
 {
-    if([sender.title isEqual:@"Select"])
+    if([sender selectedSegmentIndex]==1)
     {
         self.table.allowsMultipleSelection=YES;
-        sender.title=@"Done";
+       // sender.title=@"Done";
         [[NSNotificationCenter defaultCenter] postNotificationName:@"prepareForMulti" object:self userInfo:nil];
     }
            
