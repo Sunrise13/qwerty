@@ -56,11 +56,6 @@
 - (void)navigateTo:(NSNotification *)n
 {
     
-    BOOL multipleSelection=((BNRMasterViewController *)n.object).table.allowsMultipleSelection;
-    
-   
-  
-    
     NSString *lat = n.userInfo[@"lat"];
     NSString *longitude = n.userInfo[@"long"];
     CLLocationCoordinate2D center = CLLocationCoordinate2DMake( [lat doubleValue], [longitude doubleValue]);
@@ -165,14 +160,8 @@
                     if([self.placemarks count]==[pathes count])
                         [self calculateAndShowRoutes];
                 }];
-      
-        //NSLog(@"%@",((CLPlacemark *)self.placemarks[i]).country);
-        
-            
         
     }
-    
-    
 }
 
 - (void)calculateAndShowRoutes
@@ -194,19 +183,6 @@
                 _routeDetails = response.routes.lastObject;
                 _map.delegate=self;
                 [_map addOverlay:_routeDetails.polyline];
-                
-                
-                //self.destinationLabel.text = [placemark.addressDictionary objectForKey:@"Street"];
-                // self.distanceLabel.text = [NSString stringWithFormat:@"%0.1f Miles", routeDetails.distance/1609.344];
-                // self.transportLabel.text = [NSString stringWithFormat:@"%u" ,routeDetails.transportType];
-                //self.allSteps = @"";
-                //for (int i = 0; i < routeDetails.steps.count; i++) {
-                //  MKRouteStep *step = [routeDetails.steps objectAtIndex:i];
-                //  NSString *newStep = step.instructions;
-                //  self.allSteps = [self.allSteps stringByAppendingString:newStep];
-                // self.allSteps = [self.allSteps stringByAppendingString:@"\n\n"];
-                // self.steps.text = self.allSteps;
-                // }
             }
         }];
     }
@@ -234,17 +210,6 @@
     self.pinNameArr=[NSMutableArray new];
     self.map.showsUserLocation = YES;
     
-    //CLLocationCoordinate2D coord[4];
-   // coord[0] = CLLocationCoordinate2DMake(41.000512, -109.050116);
-    //coord[1] = CLLocationCoordinate2DMake(41.002371, -102.052066);
-    //coord[2] = CLLocationCoordinate2DMake(36.993076, -102.041981);
-    //coord[3] = CLLocationCoordinate2DMake(36.99892, -109.045267);
-    //
-   // MKPolygon *poligon = [MKPolygon polygonWithCoordinates:coord
-                                                  //   count:4];
-    //poligon.title = @"Colorado";
-    //[self.map addOverlay:poligon];
-    
     self.longPressGestureRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(handleLongPressGestures:)];
     
     self.longPressGestureRecognizer.numberOfTouchesRequired = 1;
@@ -267,6 +232,8 @@
     {
         [self.master.table deselectRowAtIndexPath:path animated:NO];
     }
+    NSArray* arr=[self.map overlays];
+    [self.map removeOverlays:arr];
     
 }
 
@@ -274,7 +241,6 @@
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
 }
 
 
@@ -287,7 +253,6 @@
         aRenderer.fillColor = [[UIColor cyanColor] colorWithAlphaComponent:0.2];
         aRenderer.strokeColor = [[UIColor blueColor] colorWithAlphaComponent:0.7];
         aRenderer.lineWidth = 3;
-        
         return aRenderer;
     }
     
