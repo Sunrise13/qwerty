@@ -136,7 +136,7 @@
             </objects>
             <point key="canvasLocation" x="859" y="-631"/>
         </scene>
-        <!--Add View Controller-->
+        <!--Add View Controller - Adding new Cities-->
         <scene sceneID="rfI-HD-9St">
             <objects>
                 <viewController id="wg2-qD-ORE" customClass="BNRAddViewController" sceneMemberID="viewController">
@@ -185,8 +185,8 @@
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <simulatedOrientationMetrics key="simulatedOrientationMetrics" orientation="landscapeRight"/>
                     </view>
-                    <navigationItem key="navigationItem" id="i9x-rd-DWq">
-                        <barButtonItem key="rightBarButtonItem" title="Add" id="Lx1-zY-qEV">
+                    <navigationItem key="navigationItem" title="Adding new Cities" id="i9x-rd-DWq">
+                        <barButtonItem key="rightBarButtonItem" title="Done" id="Lx1-zY-qEV">
                             <connections>
                                 <action selector="addCity:" destination="wg2-qD-ORE" id="EZu-H1-kj0"/>
                             </connections>

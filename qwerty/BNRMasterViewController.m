@@ -7,7 +7,6 @@
 //
 
 #import "BNRMasterViewController.h"
-
 #import "BNRDetailViewController.h"
 
 @interface BNRMasterViewController () {
@@ -30,11 +29,6 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-	// Do any additional setup after loading the view, typically from a nib.
-   // self.navigationItem.leftBarButtonItem = self.editButtonItem;
-
-    //UIBarButtonItem *addButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(insertNewObject:)];
-    //self.navigationItem.rightBarButtonItem = addButton;
     self.detailViewController = (BNRDetailViewController *)[[self.splitViewController.viewControllers lastObject] topViewController];
     
     NSURL *url = [[NSBundle mainBundle] URLForResource:@"PropertyList" withExtension:@"plist"];
@@ -126,9 +120,9 @@
     }
     
     if ([segue.identifier isEqualToString:@"AddCity"]) {
-        BNRAddViewController *PickerViewController = segue.destinationViewController;
-        PickerViewController.delegate = self;
-        PickerViewController.detailViewController=self.detailViewController;
+        BNRAddViewController *PController = segue.destinationViewController;
+        PController.delegate = self;
+        PController.detailViewController = self.detailViewController;
     }
 }
 
@@ -149,8 +143,24 @@
 
 - (void)AddViewController:(BNRAddViewController *)controller didAddCity:(NSDictionary *)city
 {
-    [_arr addObject:city];
+    BOOL ok = true;
+    for(NSDictionary*ar in _arr)
+    {
+        if([ar[@"city"]isEqualToString:city[@"city"]])
+            ok = false;
+    }
+    
+    if(![[controller.search text] isEqual: @""] && ok)
+    {
+        [_arr addObject:city];
+        [self.tableView reloadData];
+        [self saveToFile];
+    }
 }
 
+-(void)saveToFile
+{
+    
+}
 
 @end
