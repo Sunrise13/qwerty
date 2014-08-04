@@ -145,7 +145,6 @@
 {
     NSLog(@"In getGeolocation");
      NSArray * pathes=[self.master.table indexPathsForSelectedRows];
-    NSInteger pathes_row=[pathes count]-1;
     for(int i=0; i<[pathes count]; i++)
     {
        
@@ -162,7 +161,7 @@
                         return;
                     }
                     NSLog(@"Create placemark %d", i);
-                    [self.placemarks addObject:placemark];
+                    [self.placemarks setObject:placemark forKey:[NSNumber numberWithInt:i]];
                     if([self.placemarks count]==[pathes count])
                         [self calculateAndShowRoutes];
                 }];
@@ -184,14 +183,14 @@
     {
         MKDirectionsRequest *directionRequest=[MKDirectionsRequest new];
         
-        directionRequest.source=[[MKMapItem alloc] initWithPlacemark:[[MKPlacemark alloc] initWithPlacemark:self.placemarks[i][0]]];
-        directionRequest.destination=[[MKMapItem alloc] initWithPlacemark:[[MKPlacemark alloc] initWithPlacemark:self.placemarks[i+1][0]]];
+        directionRequest.source=[[MKMapItem alloc] initWithPlacemark:[[MKPlacemark alloc] initWithPlacemark:self.placemarks[[NSNumber numberWithInt:i]][0]]];
+        directionRequest.destination=[[MKMapItem alloc] initWithPlacemark:[[MKPlacemark alloc] initWithPlacemark:self.placemarks[[NSNumber numberWithInt:i+1]][0]]];
         MKDirections *directions = [[MKDirections alloc] initWithRequest:directionRequest];
         [directions calculateDirectionsWithCompletionHandler:^(MKDirectionsResponse *response, NSError *error) {
             if (error) {
                 NSLog(@"Error %@", error.description);
             } else {
-                NSLog(@"create route %d",i);
+                NSLog(@"create route with %d, and %d", i, i+1);
                 _routeDetails = response.routes.lastObject;
                 _map.delegate=self;
                 [_map addOverlay:_routeDetails.polyline];
@@ -231,7 +230,7 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(multiNavigation:) name:@"multiNavigation" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(prepareForMulti:)name:@"prepareForMulti" object:nil];
     
-    self.placemarks=[NSMutableArray new];
+    self.placemarks=[NSMutableDictionary new];
     self.pinNameArr=[NSMutableArray new];
     self.map.showsUserLocation = YES;
     
