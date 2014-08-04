@@ -36,8 +36,8 @@
     [self.table setSeparatorStyle:UITableViewCellSeparatorStyleNone];
    // _table.allowsMultipleSelection=YES;
     
-    
 }
+
 
 - (void)didReceiveMemoryWarning
 {
