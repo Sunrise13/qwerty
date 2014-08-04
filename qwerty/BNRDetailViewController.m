@@ -317,6 +317,21 @@
     return routeLineRenderer;
 }
 
+
+
+- (void) alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    NSString *buttonTitle = [alertView buttonTitleAtIndex:buttonIndex];
+    if ([buttonTitle isEqualToString:@"Yes"])
+    {
+        NSLog(@"How to store new data???");
+    }
+    else if ([buttonTitle isEqualToString:@"No"])
+    {
+        NSLog(@"Nonononono");
+    }
+}
+
 //selector for long pressing on the map
 - (void) handleLongPressGestures:(UILongPressGestureRecognizer *)gestureRecognizer
 {
@@ -342,7 +357,7 @@
              //отримуєм місто
              [newTitle appendString: placemark.locality];
 
-             //touchPin.title = newTitle;
+
              
              NSArray *ann = [self.map annotations];
              
@@ -354,6 +369,10 @@
              touchPin.coordinate = location;
              touchPin.title = newTitle;
              [self.map addAnnotation:touchPin]; //на карті в місці натиснення відображається стандартний червоний пін
+             
+             UIAlertView *addNewPinView = [[UIAlertView alloc] initWithTitle:@"Do you want to add this city to your collection?" message: newTitle delegate:self cancelButtonTitle:@"No" otherButtonTitles:@"Yes", nil];
+             
+             [addNewPinView show];
              
              //Сюди можна додати якийсь функціонал, який додає
              // координати в новий айтем або - тепер уже  - в бд
