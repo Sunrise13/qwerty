@@ -10,7 +10,7 @@
 #import <MapKit/MapKit.h>
 #import "BNRMasterViewController.h"
 
-@interface BNRDetailViewController : UIViewController <UISplitViewControllerDelegate, MKMapViewDelegate>
+@interface BNRDetailViewController : UIViewController <UISplitViewControllerDelegate, MKMapViewDelegate, UIAlertViewDelegate>
 
 @property (strong, nonatomic) id detailItem;
 
