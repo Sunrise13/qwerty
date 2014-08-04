@@ -131,10 +131,14 @@
     if([sender selectedSegmentIndex]==1)
     {
         self.table.allowsMultipleSelection=YES;
-       // sender.title=@"Done";
         [[NSNotificationCenter defaultCenter] postNotificationName:@"prepareForMulti" object:self userInfo:nil];
     }
-           
+    if([sender selectedSegmentIndex]==0)
+    {
+        self.table.allowsMultipleSelection=NO;
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"prepareForMulti" object:self userInfo:nil];
+    }
+        
 }
 
 - (void)AddViewController:(BNRAddViewController *)controller didAddCity:(NSDictionary *)city

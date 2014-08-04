@@ -10,8 +10,21 @@
 #import "BNRMasterViewController.h"
 #import <MapKit/MapKit.h>
 
+static NSInteger y=10;
+static BOOL first=true;
+static BOOL second=true;
+typedef enum
+{
+    RouteAuto,
+    RouteBike,
+    RouteFly,
+    RoutePoligon
+} Route;
+static Route route;
+
 @interface BNRDetailViewController ()
 @property (strong, nonatomic) UIPopoverController *masterPopoverController;
+@property(strong, nonatomic) NSMutableDictionary *buttonsForMultinavigation;
 - (void)configureView;
 @end
 
@@ -56,11 +69,6 @@
 - (void)navigateTo:(NSNotification *)n
 {
     
-    BOOL multipleSelection=((BNRMasterViewController *)n.object).table.allowsMultipleSelection;
-    
-   
-  
-    
     NSString *lat = n.userInfo[@"lat"];
     NSString *longitude = n.userInfo[@"long"];
     CLLocationCoordinate2D center = CLLocationCoordinate2DMake( [lat doubleValue], [longitude doubleValue]);
@@ -82,7 +90,6 @@
 
 - (void) multiNavigation:(NSNotification *)n
 {
-    static BOOL first=true;
 
     BOOL multipleSelection=((BNRMasterViewController *)n.object).table.allowsMultipleSelection;
     if(!multipleSelection)
@@ -107,7 +114,7 @@
     NSArray * pathes=[((BNRMasterViewController *)n.object).table indexPathsForSelectedRows];
     if(pathes!=nil)
     {
-        static NSInteger y=10;
+       // static NSInteger y=10;
 
             NSIndexPath * path=(NSIndexPath *)[pathes lastObject];
             NSDictionary * city=self.master.arr[path.row];
@@ -125,26 +132,55 @@
         
         if([self.pinNameArr count]>=2&&first==true)
         {
+            
             first=false;
             UIButton * createRouteButton=[UIButton new];
-            createRouteButton.frame=CGRectMake(250, 25, 200, 25);
-            [createRouteButton setTitle:@"Create route" forState:UIControlStateNormal];
+            createRouteButton.frame=CGRectMake(250, 10, 200, 25);
+            [createRouteButton setTitle:@"Auto Route" forState:UIControlStateNormal];
             [createRouteButton setBackgroundColor:[UIColor whiteColor]];
             [createRouteButton setTitleColor:[UIColor blueColor] forState:UIControlStateNormal];
-            [createRouteButton addTarget:self action:@selector(getGeolocations) forControlEvents:UIControlEventTouchUpInside];
+            [createRouteButton addTarget:self action:@selector(getGeolocations:) forControlEvents:UIControlEventTouchUpInside];
+            [self.buttonsForMultinavigation setValue:createRouteButton forKey:@"Auto Route"];
+            
             [self.map addSubview:createRouteButton];
             
         }
+        if([self.pinNameArr count]>=3&&second==true)
+        {
+            route=RoutePoligon;
+            
+            second=false;
+            UIButton * createRouteButton=[UIButton new];
+            createRouteButton.frame=CGRectMake(250, 45, 200, 25);
+            [createRouteButton setTitle:@"Polygon" forState:UIControlStateNormal];
+            [createRouteButton setBackgroundColor:[UIColor whiteColor]];
+            [createRouteButton setTitleColor:[UIColor blueColor] forState:UIControlStateNormal];
+            [createRouteButton addTarget:self action:@selector(getGeolocations:) forControlEvents:UIControlEventTouchUpInside];
+            [self.buttonsForMultinavigation setValue:createRouteButton forKey:@"Polygon"];
+            [self.map addSubview:createRouteButton];
+        }
+        
+        
         
     }
 
 }
 
 
--(void)getGeolocations
+-(void)getGeolocations:(id)sender
 {
-    NSLog(@"In getGeolocation");
-     NSArray * pathes=[self.master.table indexPathsForSelectedRows];
+    NSString * typeOfRoute=((UIButton *) sender).titleLabel.text;
+    if([typeOfRoute isEqualToString:@"Auto Route"])
+    {
+        NSLog(@"Auto");
+        route=RouteAuto;
+    }
+    if([typeOfRoute isEqualToString:@"Polygon"])
+    {
+        route=RoutePoligon;
+    }
+        
+    NSArray * pathes=[self.master.table indexPathsForSelectedRows];
     for(int i=0; i<[pathes count]; i++)
     {
        
@@ -163,17 +199,24 @@
                     NSLog(@"Create placemark %d", i);
                     [self.placemarks setObject:placemark forKey:[NSNumber numberWithInt:i]];
                     if([self.placemarks count]==[pathes count])
-                        [self calculateAndShowRoutes];
+                    {
+                        NSLog(@"In switch");
+                        switch(route)
+                        {
+                            case RouteAuto: [self calculateAndShowRoutes]; break;
+                            case RoutePoligon: [self calculateAndShowPolygon]; break;
+                        }
+                    }
                 }];
                 
         
     }
-    
-    
 }
 
 - (void)calculateAndShowRoutes
 {
+    NSArray* arr=[self.map overlays];
+    [self.map removeOverlays:arr];
     NSLog(@"In calculateAndShowRoutes");
        NSArray * pathes=[self.master.table indexPathsForSelectedRows];
     for(int i=0; i<=[pathes count]-2; i++)
@@ -198,6 +241,23 @@
     
     
 }
+- (void) calculateAndShowPolygon
+{
+    NSArray* arr=[self.map overlays];
+    [self.map removeOverlays:arr];
+    NSLog(@"In calculateAndShowPolygon");
+    //NSArray * pathes=[self.master.table indexPathsForSelectedRows];
+    CLLocationCoordinate2D points[[self.placemarks count]];
+    int i=0;
+    for(NSNumber *key in self.placemarks)
+    {
+        points[i]=((CLPlacemark *)(self.placemarks[key][0])).location.coordinate;
+        i++;
+    }
+    MKPolygon * poly=[MKPolygon polygonWithCoordinates:points count:[self.placemarks count]];
+    [self.map addOverlay:poly];
+}
+
 - (void)viewDidLoad
 {
     self.pinArr=[NSMutableArray new];
@@ -226,21 +286,20 @@
     
     self.placemarks=[NSMutableDictionary new];
     self.pinNameArr=[NSMutableArray new];
+    self.buttonsForMultinavigation=[NSMutableDictionary new];
     self.map.showsUserLocation = YES;
-}
-
-
--(void)closeApp:(NSNotificationCenter *)n
-{
-   // NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-   // NSString *documentsDirectory = [paths objectAtIndex:0];
-//    NSString *filePath = [documentsDirectory stringByAppendingPathComponent:@"PropertyList.plist"];
-   NSString * filePath  = @"PropertyList.plist";
-   [_master.arr writeToFile:filePath atomically:YES];
+    
+    self.longPressGestureRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(handleLongPressGestures:)];
+    
+    self.longPressGestureRecognizer.numberOfTouchesRequired = 1;
+    self.longPressGestureRecognizer.allowableMovement = 50.0;
+    self.longPressGestureRecognizer.minimumPressDuration = 1.5;
+    [self.view addGestureRecognizer:self.longPressGestureRecognizer];
 }
 
 - (void)prepareForMulti:(NSNotificationCenter *)n
 {
+    y=10;
     [self.map removeAnnotations:self.pinArr];
     [self.pinArr removeAllObjects];
     for( UITextField * txt in _pinNameArr)
@@ -253,6 +312,17 @@
     {
         [self.master.table deselectRowAtIndexPath:path animated:NO];
     }
+    NSArray* arr=[self.map overlays];
+    [self.map removeOverlays:arr];
+    arr=[self.buttonsForMultinavigation allKeys];
+    
+    for(NSString *key in self.buttonsForMultinavigation)
+    {
+        [self.buttonsForMultinavigation[key] removeFromSuperview];
+    }
+    [self.buttonsForMultinavigation removeAllObjects];
+    first=true;
+    second=true;
     
 }
 
@@ -260,7 +330,6 @@
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
 }
 
 
@@ -273,7 +342,6 @@
         aRenderer.fillColor = [[UIColor cyanColor] colorWithAlphaComponent:0.2];
         aRenderer.strokeColor = [[UIColor blueColor] colorWithAlphaComponent:0.7];
         aRenderer.lineWidth = 3;
-        
         return aRenderer;
     }
     
@@ -296,10 +364,24 @@
     self.masterPopoverController = nil;
 }
 -(MKOverlayRenderer *)mapView:(MKMapView *)mapView rendererForOverlay:(id<MKOverlay>)overlay {
+    if ([overlay isKindOfClass:[MKPolygon class]])
+    {
+        MKPolygonRenderer*    aRenderer = [[MKPolygonRenderer alloc] initWithPolygon:(MKPolygon*)overlay];
+        
+        aRenderer.fillColor = [[UIColor cyanColor] colorWithAlphaComponent:0.2];
+        aRenderer.strokeColor = [[UIColor blueColor] colorWithAlphaComponent:0.7];
+        aRenderer.lineWidth = 3;
+        
+        return aRenderer;
+    }
+    else
+    {
+
     MKPolylineRenderer  * routeLineRenderer = [[MKPolylineRenderer alloc] initWithPolyline:overlay];
     routeLineRenderer.strokeColor = [UIColor redColor];
     routeLineRenderer.lineWidth = 5;
     return routeLineRenderer;
+    }
 }
 
 
