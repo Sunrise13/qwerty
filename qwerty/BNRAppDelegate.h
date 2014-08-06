@@ -7,9 +7,11 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "CoreDataHelper.h"
 
 @interface BNRAppDelegate : UIResponder <UIApplicationDelegate>
 
 @property (strong, nonatomic) UIWindow *window;
+@property (strong, nonatomic) CoreDataHelper *db;
 
 @end

@@ -9,6 +9,7 @@
 #import "BNRDetailViewController.h"
 #import "BNRMasterViewController.h"
 #import <MapKit/MapKit.h>
+#import "pinItem.h"
 
 static NSInteger y=10;
 static BOOL first=true;
@@ -71,15 +72,15 @@ static Route route;
 - (void)navigateTo:(NSNotification *)n
 {
     
-    NSString *lat = n.userInfo[@"lat"];
-    NSString *longitude = n.userInfo[@"long"];
+    NSNumber *lat = ((pinItem *)n.userInfo[@"managedObj"]).lat;
+    NSNumber *longitude = ((pinItem *)n.userInfo[@"managedObj"]).lon;
     CLLocationCoordinate2D center = CLLocationCoordinate2DMake( [lat doubleValue], [longitude doubleValue]);
     MKCoordinateSpan span = MKCoordinateSpanMake(0.2, 0.2);
     MKCoordinateRegion reg = MKCoordinateRegionMake(center, span);
     
     
     MKPointAnnotation *pin=[MKPointAnnotation new];
-    pin.title=n.userInfo[@"city"];
+    pin.title=((pinItem *)n.userInfo[@"managedObj"]).city;
     pin.coordinate=CLLocationCoordinate2DMake([lat doubleValue], [longitude doubleValue]);
     [self.pinArr addObject:pin];
     [self.map addAnnotation:pin];
@@ -116,13 +117,13 @@ static Route route;
     NSArray * pathes=[((BNRMasterViewController *)n.object).table indexPathsForSelectedRows];
     if(pathes!=nil)
     {
-       // static NSInteger y=10;
+       
 
             NSIndexPath * path=(NSIndexPath *)[pathes lastObject];
-            NSDictionary * city=self.master.arr[path.row];
+            pinItem * item=self.master.managedObjs[path.row];
             
             UITextField * txt=[UITextField new];
-            txt.text=city[@"city"];
+            txt.text=item.city;
             txt.frame=CGRectMake(10, y, 200, 28);
             txt.borderStyle=UITextBorderStyleRoundedRect;
             txt.textAlignment=NSTextAlignmentCenter;

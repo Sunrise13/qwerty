@@ -8,7 +8,7 @@
 
 #import "BNRMasterViewController.h"
 #import "BNRDetailViewController.h"
-
+#import "pinItem.h"
 @interface BNRMasterViewController () {
     NSMutableArray *_objects;
 }
@@ -36,6 +36,12 @@
     [self.table setSeparatorStyle:UITableViewCellSeparatorStyleNone];
    // _table.allowsMultipleSelection=YES;
     
+    if(self.db)
+    {
+        [self.db setupCoreData];
+        self.managedObjs=[self.db getManagedObjArray];
+
+    }
 }
 
 
@@ -64,19 +70,18 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return [self.arr count];
-//    _objects.count;
+    return [self.managedObjs count];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell" forIndexPath:indexPath];
     cell.selectionStyle=UITableViewCellSelectionStyleNone;
-//    NSDate *object = _objects[indexPath.row];
-    NSString *cityName = self.arr[indexPath.row][@"city"] ;
+
+    
+    NSString *cityName = ((pinItem *)self.managedObjs[indexPath.row]).city ;
     
     cell.textLabel.text = cityName;
-//    [object description];
     return cell;
 }
 
@@ -103,7 +108,10 @@
         self.detailViewController.detailItem = object;
     }
     
-    NSDictionary *dic = self.arr[indexPath.row];
+    
+    pinItem * item=self.managedObjs[indexPath.row];
+    NSDictionary *dic =[[NSDictionary alloc] initWithObjectsAndKeys:item, @"managedObj", nil];
+    
     [[NSNotificationCenter defaultCenter] postNotificationName:@"multiNavigation"
                                                         object:self
                                                       userInfo:dic];
@@ -143,25 +151,20 @@
 
 - (void)AddViewController:(BNRAddViewController *)controller didAddCity:(NSDictionary *)city
 {
-    BOOL ok = true;
-    for(NSDictionary*ar in _arr)
-    {
-        if([ar[@"city"]isEqualToString:city[@"city"]])
-            ok = false;
-    }
+//    BOOL ok = true;
+//    for(NSDictionary*ar in _arr)
+//    {
+//        if([ar[@"city"]isEqualToString:city[@"city"]])
+//            ok = false;
+//    }
     
-    if(![[controller.search text] isEqual: @""] && ok)
-    {
-        [_arr addObject:city];
+//    if(![[controller.search text] isEqual: @""] && ok)
+//    {
+//        [_arr addObject:city];
         [self.tableView reloadData];
-        [self saveToFile];
-    }
+//    }
 }
 
--(void)saveToFile
-{
-    
-}
 
 - (UITableViewCellEditingStyle) tableView:(UITableView *)tableView editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath
 {
@@ -184,7 +187,8 @@
 {
     if (editingStyle == UITableViewCellEditingStyleDelete)
     {
-        [self.arr removeObjectAtIndex:indexPath.row];
+        [self.db.context deleteObject:self.managedObjs[indexPath.row]];
+        [_managedObjs removeObjectAtIndex:indexPath.row];
         
         [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationLeft];
     }

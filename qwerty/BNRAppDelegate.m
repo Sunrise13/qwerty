@@ -7,16 +7,23 @@
 //
 
 #import "BNRAppDelegate.h"
+#import "BNRMasterViewController.h"
 
 @implementation BNRAppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+    
     // Override point for customization after application launch.
     if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
         UISplitViewController *splitViewController = (UISplitViewController *)self.window.rootViewController;
         UINavigationController *navigationController = [splitViewController.viewControllers lastObject];
+        UINavigationController *navigationController1 = [splitViewController.viewControllers firstObject];
+        BNRMasterViewController *master=[navigationController1 viewControllers][0];
+        self.db=[CoreDataHelper new];
+        master.db=self.db;
         splitViewController.delegate = (id)navigationController.topViewController;
+        
     }
     return YES;
 }
@@ -29,7 +36,7 @@
 
 - (void)applicationDidEnterBackground:(UIApplication *)application
 {
-   
+    [self.db saveContext];
 
 }
 
@@ -45,6 +52,7 @@
 
 - (void)applicationWillTerminate:(UIApplication *)application
 {
+    [self.db saveContext];
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
 }
 

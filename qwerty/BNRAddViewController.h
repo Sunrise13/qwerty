@@ -9,12 +9,14 @@
 #import <UIKit/UIKit.h>
 #import <MapKit/MapKit.h>
 #import <CoreLocation/CoreLocation.h>
+#import "BNRMasterViewController.h"
 
-@class BNRCity;
+//@class BNRCity;
 @class BNRAddViewController;
 @class BNRDetailViewController;
 
-@protocol BNRAddViewControllerDelegate <NSObject>
+//@protocol BNRAddViewControllerDelegate <NSObject>
+@protocol hello <NSObject>
 
 - (void)AddViewController:(BNRAddViewController *)controller didAddCity:(NSDictionary *)city;
 
@@ -24,7 +26,7 @@
 
 @property (strong, nonatomic) BNRDetailViewController *detailViewController;
 
-@property (nonatomic, weak) id <BNRAddViewControllerDelegate> delegate;
+@property (nonatomic, weak) id <hello> delegate ;
 @property (weak, nonatomic) IBOutlet UISearchBar *search;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *adButton;
 @property (weak, nonatomic) IBOutlet UILabel *longitudeLabel;

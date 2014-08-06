@@ -26,7 +26,10 @@
 		4D461A8E1987BD5A00E08BDA /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 4D461A8C1987BD5A00E08BDA /* InfoPlist.strings */; };
 		4D461A901987BD5A00E08BDA /* qwertyTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D461A8F1987BD5A00E08BDA /* qwertyTests.m */; };
 		4D8B7096198B8E450010D5B1 /* BNRAddViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D8B7095198B8E450010D5B1 /* BNRAddViewController.m */; };
-		D2BCBB53198BC3E9007ED17E /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D2BCBB52198BC3E9007ED17E /* CoreLocation.framework */; };
+		D247EDCD19926501008A9140 /* CoreDataHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = D247EDCC19926501008A9140 /* CoreDataHelper.m */; };
+		D247EDD0199268CE008A9140 /* mapModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = D247EDCE199268CE008A9140 /* mapModel.xcdatamodeld */; };
+		D247EDD21992698A008A9140 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D247EDD11992698A008A9140 /* CoreData.framework */; };
+		D247EDD919926C32008A9140 /* pinItem.m in Sources */ = {isa = PBXBuildFile; fileRef = D247EDD819926C32008A9140 /* pinItem.m */; };
 		D2E02E0119891230000A634E /* Main_iPad.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D2E02DFF19891230000A634E /* Main_iPad.storyboard */; };
 /* End PBXBuildFile section */
 
@@ -67,7 +70,12 @@
 		4D461A8F1987BD5A00E08BDA /* qwertyTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = qwertyTests.m; sourceTree = "<group>"; };
 		4D8B7094198B8E450010D5B1 /* BNRAddViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BNRAddViewController.h; sourceTree = "<group>"; };
 		4D8B7095198B8E450010D5B1 /* BNRAddViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BNRAddViewController.m; sourceTree = "<group>"; };
-		D2BCBB52198BC3E9007ED17E /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
+		D247EDCB19926501008A9140 /* CoreDataHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CoreDataHelper.h; sourceTree = "<group>"; };
+		D247EDCC19926501008A9140 /* CoreDataHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CoreDataHelper.m; sourceTree = "<group>"; };
+		D247EDCF199268CE008A9140 /* mapModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = mapModel.xcdatamodel; sourceTree = "<group>"; };
+		D247EDD11992698A008A9140 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
+		D247EDD719926C32008A9140 /* pinItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = pinItem.h; path = ../pinItem.h; sourceTree = "<group>"; };
+		D247EDD819926C32008A9140 /* pinItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = pinItem.m; path = ../pinItem.m; sourceTree = "<group>"; };
 		D2E02E0019891230000A634E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main_iPad.storyboard; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -76,6 +84,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D247EDD21992698A008A9140 /* CoreData.framework in Frameworks */,
 				4D09F201198BD05B00708DF8 /* CoreLocation.framework in Frameworks */,
 				4D02442B1987C49700763295 /* MapKit.framework in Frameworks */,
 				4D461A611987BD5900E08BDA /* CoreGraphics.framework in Frameworks */,
@@ -119,6 +128,7 @@
 		4D461A5D1987BD5900E08BDA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				D247EDD11992698A008A9140 /* CoreData.framework */,
 				4D09F200198BD05B00708DF8 /* CoreLocation.framework */,
 				4D02442A1987C49700763295 /* MapKit.framework */,
 				4D461A5E1987BD5900E08BDA /* Foundation.framework */,
@@ -132,6 +142,7 @@
 		4D461A641987BD5900E08BDA /* qwerty */ = {
 			isa = PBXGroup;
 			children = (
+				D247EDCA199264E9008A9140 /* CoreData */,
 				4D461A6D1987BD5900E08BDA /* BNRAppDelegate.h */,
 				4D461A6E1987BD5900E08BDA /* BNRAppDelegate.m */,
 				D2E02DFF19891230000A634E /* Main_iPad.storyboard */,
@@ -176,6 +187,18 @@
 				4D461A8C1987BD5A00E08BDA /* InfoPlist.strings */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		D247EDCA199264E9008A9140 /* CoreData */ = {
+			isa = PBXGroup;
+			children = (
+				D247EDD719926C32008A9140 /* pinItem.h */,
+				D247EDD819926C32008A9140 /* pinItem.m */,
+				D247EDCB19926501008A9140 /* CoreDataHelper.h */,
+				D247EDCC19926501008A9140 /* CoreDataHelper.m */,
+				D247EDCE199268CE008A9140 /* mapModel.xcdatamodeld */,
+			);
+			name = CoreData;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -278,7 +301,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D247EDCD19926501008A9140 /* CoreDataHelper.m in Sources */,
 				4D461A7B1987BD5900E08BDA /* BNRDetailViewController.m in Sources */,
+				D247EDD919926C32008A9140 /* pinItem.m in Sources */,
+				D247EDD0199268CE008A9140 /* mapModel.xcdatamodeld in Sources */,
 				4D8B7096198B8E450010D5B1 /* BNRAddViewController.m in Sources */,
 				4D461A6B1987BD5900E08BDA /* main.m in Sources */,
 				4D461A781987BD5900E08BDA /* BNRMasterViewController.m in Sources */,
@@ -517,6 +543,19 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		D247EDCE199268CE008A9140 /* mapModel.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				D247EDCF199268CE008A9140 /* mapModel.xcdatamodel */,
+			);
+			currentVersion = D247EDCF199268CE008A9140 /* mapModel.xcdatamodel */;
+			path = mapModel.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = 4D461A531987BD5900E08BDA /* Project object */;
 }

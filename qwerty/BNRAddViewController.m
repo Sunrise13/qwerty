@@ -8,6 +8,7 @@
 
 #import "BNRAddViewController.h"
 #import "BNRDetailViewController.h"
+#import "pinItem.h"
 
 @interface BNRAddViewController ()
 
@@ -61,13 +62,16 @@ CLPlacemark *thePlacemark;
 // Adding the city
 - (IBAction)addCity:(id)sender {
     
-    NSNumber * lat = [NSNumber numberWithDouble:[self.latitudeLabel.text doubleValue]];
-    NSNumber * lon = [NSNumber numberWithDouble:[self.longitudeLabel.text doubleValue]];
-    NSString * str = self.search.text;
+    NSManagedObjectContext * context=((BNRMasterViewController *)self.delegate).db.context;
+    pinItem * item=[NSEntityDescription insertNewObjectForEntityForName:@"Pin"inManagedObjectContext:context];
     
-    NSDictionary * city = [[NSDictionary alloc] initWithObjectsAndKeys:str,@"city",lat,@"lat",lon,@"long", nil];
-    
-   [self.delegate AddViewController:self didAddCity:city];
+    item.lat= [NSNumber numberWithDouble:[self.latitudeLabel.text doubleValue]];
+    item.lon= [NSNumber numberWithDouble:[self.longitudeLabel.text doubleValue]];
+    item.city= self.search.text;
+    [context save:nil];
+    [context reset];
+   ((BNRMasterViewController *)self.delegate).managedObjs=[((BNRMasterViewController *)self.delegate).db getManagedObjArray];
+   [self.delegate AddViewController:self didAddCity:nil];
 }
 
 
