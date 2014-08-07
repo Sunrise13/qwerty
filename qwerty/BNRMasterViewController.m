@@ -9,7 +9,10 @@
 #import "BNRMasterViewController.h"
 #import "BNRDetailViewController.h"
 #import "pinItem.h"
-@interface BNRMasterViewController () {
+
+#import "BNRAddViewController.h"
+
+@interface BNRMasterViewController () <BNRAddViewControllerDelegate> {
     NSMutableArray *_objects;
 }
 
@@ -40,7 +43,6 @@
     {
         [self.db setupCoreData];
         self.managedObjs=[self.db getManagedObjArray];
-
     }
 }
 
@@ -129,7 +131,7 @@
     
     if ([segue.identifier isEqualToString:@"AddCity"]) {
         BNRAddViewController *PController = segue.destinationViewController;
-        PController.delegate = self;
+        PController.delegate3 = self;
         PController.detailViewController = self.detailViewController;
     }
 }

@@ -62,7 +62,7 @@ CLPlacemark *thePlacemark;
 // Adding the city
 - (IBAction)addCity:(id)sender {
     
-    NSManagedObjectContext * context=((BNRMasterViewController *)self.delegate).db.context;
+    NSManagedObjectContext * context=((BNRMasterViewController *)self.delegate3).db.context;
     pinItem * item=[NSEntityDescription insertNewObjectForEntityForName:@"Pin"inManagedObjectContext:context];
     
     item.lat= [NSNumber numberWithDouble:[self.latitudeLabel.text doubleValue]];
@@ -70,8 +70,14 @@ CLPlacemark *thePlacemark;
     item.city= self.search.text;
     [context save:nil];
     [context reset];
-   ((BNRMasterViewController *)self.delegate).managedObjs=[((BNRMasterViewController *)self.delegate).db getManagedObjArray];
-   [self.delegate AddViewController:self didAddCity:nil];
+  
+    SEL asd = @selector(addCity:);
+    [self addCity:nil];
+    [self performSelectorInBackground:asd withObject:nil];
+    
+    ((BNRMasterViewController *)self.delegate3).managedObjs=[((BNRMasterViewController *)self.delegate3).db getManagedObjArray];
+  
+    [self.delegate3 AddViewController:self didAddCity:nil];
 }
 
 
@@ -186,7 +192,7 @@ CLPlacemark *thePlacemark;
          }
          else if(error!=nil)
          {
-             NSLog(@"Error!");
+             NSLog(@"Error! %@ %s, %c", [error description], __FILE__, __LINE__);
          }
          
          

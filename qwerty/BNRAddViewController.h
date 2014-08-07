@@ -16,7 +16,8 @@
 @class BNRDetailViewController;
 
 //@protocol BNRAddViewControllerDelegate <NSObject>
-@protocol hello <NSObject>
+
+@protocol BNRAddViewControllerDelegate <NSObject>
 
 - (void)AddViewController:(BNRAddViewController *)controller didAddCity:(NSDictionary *)city;
 
@@ -26,7 +27,7 @@
 
 @property (strong, nonatomic) BNRDetailViewController *detailViewController;
 
-@property (nonatomic, weak) id <hello> delegate ;
+@property (nonatomic, weak) id <BNRAddViewControllerDelegate> delegate3 ;
 @property (weak, nonatomic) IBOutlet UISearchBar *search;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *adButton;
 @property (weak, nonatomic) IBOutlet UILabel *longitudeLabel;
