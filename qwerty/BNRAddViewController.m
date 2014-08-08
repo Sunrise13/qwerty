@@ -71,7 +71,7 @@ CLPlacemark *thePlacemark;
     [context save:nil];
     [context reset];
   
-     //SEL asd = @selector(addCity:);
+    //SEL asd = @selector(addCity:);
     //[self addCity:nil];
     //[self performSelectorInBackground:asd withObject:nil];
     
@@ -192,7 +192,7 @@ CLPlacemark *thePlacemark;
          }
          else if(error!=nil)
          {
-             NSLog(@"Error! %@ %s, %c", [error description], __FILE__, __LINE__);
+             NSLog(@"Error! %@", [error description]);
          }
          
          

@@ -104,14 +104,10 @@ static Route route;
             [txt removeFromSuperview];
         }
         [self.pinNameArr removeAllObjects];
-        [self navigateTo:n];
         
     }
-    else
-    {
-        [self navigateTo:n];
-    }
-   
+
+    [self navigateTo:n];
     
     self.master=n.object;
     NSArray * pathes=[((BNRMasterViewController *)n.object).table indexPathsForSelectedRows];
@@ -121,7 +117,7 @@ static Route route;
 
             NSIndexPath * path=(NSIndexPath *)[pathes lastObject];
             pinItem * item=self.master.managedObjs[path.row];
-            
+        
             UITextField * txt=[UITextField new];
             txt.text=item.city;
             txt.frame=CGRectMake(10, y, 200, 28);
@@ -186,10 +182,11 @@ static Route route;
     NSArray * pathes=[self.master.table indexPathsForSelectedRows];
     for(int i=0; i<[pathes count]; i++)
     {
-       
+        
         CLGeocoder *geo=[CLGeocoder new];
-        CLLocation *loc=[[CLLocation alloc] initWithLatitude:([self.master.arr[[(NSIndexPath*)pathes[i] row]][@"lat"] doubleValue])
-                                                   longitude:([self.master.arr[[(NSIndexPath*)pathes[i] row]][@"long"] doubleValue])];
+        pinItem* currentItem = self.master.managedObjs[[(NSIndexPath*)pathes[i] row]];
+        CLLocation *loc=[[CLLocation alloc] initWithLatitude: [currentItem.lat doubleValue]
+                                                longitude:[currentItem.lon doubleValue]];
         [geo reverseGeocodeLocation:loc
                   completionHandler:^(NSArray *placemark, NSError *error)
                 {

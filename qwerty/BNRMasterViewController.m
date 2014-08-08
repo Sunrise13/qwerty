@@ -34,9 +34,9 @@
     [super viewDidLoad];
     self.detailViewController = (BNRDetailViewController *)[[self.splitViewController.viewControllers lastObject] topViewController];
     
-    NSURL *url = [[NSBundle mainBundle] URLForResource:@"PropertyList" withExtension:@"plist"];
-    self.arr = [NSMutableArray arrayWithContentsOfURL:url];
-    [self.table setSeparatorStyle:UITableViewCellSeparatorStyleNone];
+   // NSURL *url = [[NSBundle mainBundle] URLForResource:@"PropertyList" withExtension:@"plist"];
+   // self.arr = [NSMutableArray arrayWithContentsOfURL:url];
+   // [self.table setSeparatorStyle:UITableViewCellSeparatorStyleNone];
    // _table.allowsMultipleSelection=YES;
     
     if(self.db)
@@ -123,7 +123,7 @@
 {
     if ([[segue identifier] isEqualToString:@"showDetail"]) {
         NSIndexPath *indexPath = [self.tableView indexPathForSelectedRow];
-        NSDictionary *dic = self.arr[indexPath.row];
+        NSDictionary *dic = self.managedObjs[indexPath.row];
        // NSString *cityName =dic[@"city"];
         
         [[segue destinationViewController] setDetailItem:dic];
@@ -141,13 +141,12 @@
     if([sender selectedSegmentIndex]==1)
     {
         self.table.allowsMultipleSelection=YES;
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"prepareForMulti" object:self userInfo:nil];
     }
     if([sender selectedSegmentIndex]==0)
     {
         self.table.allowsMultipleSelection=NO;
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"prepareForMulti" object:self userInfo:nil];
     }
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"prepareForMulti" object:self userInfo:nil];
         
 }
 
