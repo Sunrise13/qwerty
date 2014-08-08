@@ -288,13 +288,6 @@ static Route route;
     self.pinNameArr=[NSMutableArray new];
     self.buttonsForMultinavigation=[NSMutableDictionary new];
     self.map.showsUserLocation = YES;
-    
-//    self.longPressGestureRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(handleLongPressGestures:)];
-//    
-//    self.longPressGestureRecognizer.numberOfTouchesRequired = 1;
-//    self.longPressGestureRecognizer.allowableMovement = 50.0;
-//    self.longPressGestureRecognizer.minimumPressDuration = 1.5;
-//    [self.view addGestureRecognizer:self.longPressGestureRecognizer];
 }
 
 - (void)prepareForMulti:(NSNotificationCenter *)n
