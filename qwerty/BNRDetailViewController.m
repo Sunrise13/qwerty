@@ -12,8 +12,6 @@
 #import "pinItem.h"
 
 static NSInteger y=10;
-static BOOL first=true;
-static BOOL second=true;
 typedef enum
 {
     RouteAuto,
@@ -32,7 +30,7 @@ static Route route;
 @end
 
 @implementation BNRDetailViewController
-@synthesize someGeocoder;
+
 
 #pragma mark - Managing the detail item
 
@@ -69,7 +67,7 @@ static Route route;
     }
 }
 
-- (void)navigateTo:(NSNotification *)n
+- (void)createPinAndSetRegion:(NSNotification *)n
 {
     
     NSNumber *lat = ((pinItem *)n.userInfo[@"managedObj"]).lat;
@@ -91,7 +89,7 @@ static Route route;
 
 }
 
-- (void) multiNavigation:(NSNotification *)n
+- (void) navigation:(NSNotification *)n
 {
 
     BOOL multipleSelection=((BNRMasterViewController *)n.object).table.allowsMultipleSelection;
@@ -104,14 +102,10 @@ static Route route;
             [txt removeFromSuperview];
         }
         [self.pinNameArr removeAllObjects];
-        [self navigateTo:n];
         
     }
-    else
-    {
-        [self navigateTo:n];
-    }
-   
+
+    [self createPinAndSetRegion:n];
     
     self.master=n.object;
     NSArray * pathes=[((BNRMasterViewController *)n.object).table indexPathsForSelectedRows];
@@ -121,7 +115,7 @@ static Route route;
 
             NSIndexPath * path=(NSIndexPath *)[pathes lastObject];
             pinItem * item=self.master.managedObjs[path.row];
-            
+        
             UITextField * txt=[UITextField new];
             txt.text=item.city;
             txt.frame=CGRectMake(10, y, 200, 28);
@@ -133,10 +127,9 @@ static Route route;
            if(multipleSelection)
                y+=35;
         
-        if([self.pinNameArr count]>=2&&first==true)
+        if([self.pinNameArr count]==2)
         {
             
-            first=false;
             UIButton * createRouteButton=[UIButton new];
             createRouteButton.frame=CGRectMake(250, 10, 200, 25);
             [createRouteButton setTitle:@"Auto Route" forState:UIControlStateNormal];
@@ -148,11 +141,10 @@ static Route route;
             [self.map addSubview:createRouteButton];
             
         }
-        if([self.pinNameArr count]>=3&&second==true)
+        if([self.pinNameArr count]==3)
         {
             route=RoutePoligon;
             
-            second=false;
             UIButton * createRouteButton=[UIButton new];
             createRouteButton.frame=CGRectMake(250, 45, 200, 25);
             [createRouteButton setTitle:@"Polygon" forState:UIControlStateNormal];
@@ -186,17 +178,17 @@ static Route route;
     NSArray * pathes=[self.master.table indexPathsForSelectedRows];
     for(int i=0; i<[pathes count]; i++)
     {
-       
+        
         CLGeocoder *geo=[CLGeocoder new];
-        CLLocation *loc=[[CLLocation alloc] initWithLatitude:([self.master.arr[[(NSIndexPath*)pathes[i] row]][@"lat"] doubleValue])
-                                                   longitude:([self.master.arr[[(NSIndexPath*)pathes[i] row]][@"long"] doubleValue])];
+        pinItem* currentItem = self.master.managedObjs[[(NSIndexPath*)pathes[i] row]];
+        CLLocation *loc=[[CLLocation alloc] initWithLatitude: [currentItem.lat doubleValue]
+                                                longitude:[currentItem.lon doubleValue]];
         [geo reverseGeocodeLocation:loc
                   completionHandler:^(NSArray *placemark, NSError *error)
                 {
                     if (error)
                     {
                         NSLog(@"Geocode failed with error: %@", error);
-                        //[self displayError:error];
                         return;
                     }
                     NSLog(@"Create placemark %d", i);
@@ -219,7 +211,14 @@ static Route route;
 - (void)calculateAndShowRoutes
 {
     NSArray* arr=[self.map overlays];
-    [self.map removeOverlays:arr];
+    for(id<MKOverlay> overlay in arr)
+    {
+        if(![overlay isKindOfClass:[MKTileOverlay class]])
+        {
+            [self.map removeOverlay:overlay];
+        }
+        
+    }
     NSLog(@"In calculateAndShowRoutes");
        NSArray * pathes=[self.master.table indexPathsForSelectedRows];
     for(int i=0; i<=[pathes count]-2; i++)
@@ -247,9 +246,15 @@ static Route route;
 - (void) calculateAndShowPolygon
 {
     NSArray* arr=[self.map overlays];
-    [self.map removeOverlays:arr];
+    for(id<MKOverlay> overlay in arr)
+    {
+        if(![overlay isKindOfClass:[MKTileOverlay class]])
+        {
+            [self.map removeOverlay:overlay];
+        }
+        
+    }
     NSLog(@"In calculateAndShowPolygon");
-    //NSArray * pathes=[self.master.table indexPathsForSelectedRows];
     CLLocationCoordinate2D points[[self.placemarks count]];
     int i=0;
     for(NSNumber *key in self.placemarks)
@@ -265,43 +270,30 @@ static Route route;
 {
     self.pinArr=[NSMutableArray new];
     [super viewDidLoad];
-	// Do any additional setup after loading the view, typically from a nib.
     [self configureView];
+
     
     [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(navigateTo:)
-                                                 name:@"navigateTo"
-                                               object:nil];
-//    
-//    [[NSNotificationCenter defaultCenter] addObserver:self
-//                                             selector:@selector(closeApp:)
-//                                                 name:@"UIApplicationDidEnterBackgroundNotification"
-//                                               object:nil];
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(multiNavigation:)
-                                                 name:@"multiNavigation"
+                                             selector:@selector(navigation:)
+                                                 name:@"navigation"
                                                object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(prepareForMulti:)
-                                                 name:@"prepareForMulti"
+                                             selector:@selector(navigationModeChanged:)
+                                                 name:@"navigationModeChanged"
                                                object:nil];
     
     self.placemarks=[NSMutableDictionary new];
     self.pinNameArr=[NSMutableArray new];
     self.buttonsForMultinavigation=[NSMutableDictionary new];
     self.map.showsUserLocation = YES;
+    self.map.delegate=self;
+    [self reloadTileOverlay];
     
-//    self.longPressGestureRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(handleLongPressGestures:)];
-//    
-//    self.longPressGestureRecognizer.numberOfTouchesRequired = 1;
-//    self.longPressGestureRecognizer.allowableMovement = 50.0;
-//    self.longPressGestureRecognizer.minimumPressDuration = 1.5;
-//    [self.view addGestureRecognizer:self.longPressGestureRecognizer];
 }
 
-- (void)prepareForMulti:(NSNotificationCenter *)n
+- (void)navigationModeChanged:(NSNotificationCenter *)n
 {
+    
     y=10;
     [self.map removeAnnotations:self.pinArr];
     [self.pinArr removeAllObjects];
@@ -316,7 +308,14 @@ static Route route;
         [self.master.table deselectRowAtIndexPath:path animated:NO];
     }
     NSArray* arr=[self.map overlays];
-    [self.map removeOverlays:arr];
+    for(id<MKOverlay> overlay in arr)
+    {
+        if(![overlay isKindOfClass:[MKTileOverlay class]])
+        {
+            [self.map removeOverlay:overlay];
+        }
+        
+    }
     arr=[self.buttonsForMultinavigation allKeys];
     
     for(NSString *key in self.buttonsForMultinavigation)
@@ -324,8 +323,6 @@ static Route route;
         [self.buttonsForMultinavigation[key] removeFromSuperview];
     }
     [self.buttonsForMultinavigation removeAllObjects];
-    first=true;
-    second=true;
     
 }
 
@@ -377,6 +374,14 @@ static Route route;
         
         return aRenderer;
     }
+    if([overlay isKindOfClass:[MKTileOverlay class]]) {
+        MKTileOverlay *tileOverlay = (MKTileOverlay *)overlay;
+        MKTileOverlayRenderer *renderer = nil;
+        
+        renderer = [[MKTileOverlayRenderer alloc] initWithTileOverlay:tileOverlay];
+        
+        
+        return renderer;}
     else
     {
 
@@ -387,92 +392,26 @@ static Route route;
     }
 }
 
-
-
-- (void) alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
-{
-    NSString *buttonTitle = [alertView buttonTitleAtIndex:buttonIndex];
-    if ([buttonTitle isEqualToString:@"Yes"])
-    {
-        NSLog(@"How to store new data???");
+-(void)reloadTileOverlay {
+    
+    // remove existing map tile overlay
+    if(self.tileOverlay) {
+        [self.map removeOverlay:self.tileOverlay];
     }
-    else if ([buttonTitle isEqualToString:@"No"])
-    {
-        NSLog(@"Nonononono");
-    }
+    
+    
+    NSString *urlTemplate = nil;
+    urlTemplate = @"http://mt0.google.com/vt/x={x}&y={y}&z={z}";
+    //urlTemplate=@"http://otile1.mqcdn.com/tiles/1.0.0/map/{z}/{x}/{y}.png";
+    //http://static-maps.yandex.ru/1.x/?ll={x},{y}&size=450,450&z={z}&l=map
+    //urlTemplate=@"http://static-maps.yandex.ru/1.x/?ll={x},{y}&size=256,256&z={z}&l=map";
+    self.tileOverlay = [[MapTileOverlay alloc] initWithURLTemplate:urlTemplate];
+    
+    
+    self.tileOverlay.canReplaceMapContent=YES;
+    [self.map addOverlay:self.tileOverlay];
+    
+    
 }
-
-////selector for long pressing on the map
-//- (void) handleLongPressGestures:(UILongPressGestureRecognizer *)gestureRecognizer
-//{
-//    if (gestureRecognizer.state != UIGestureRecognizerStateBegan)
-//        return;
-//    NSMutableString * newTitle = [NSMutableString new];
-//
-//    __block MKPointAnnotation *touchPin = [[ MKPointAnnotation alloc] init];
-//    
-//    CGPoint touchPoint = [gestureRecognizer locationInView:self.map];
-//    CLLocationCoordinate2D location =
-//    [self.map convertPoint:touchPoint toCoordinateFromView:self.map];
-//    
-//    CLLocation * locClass = [[CLLocation alloc] initWithLatitude:location.latitude longitude:location.longitude];
-//    
-//    self.someGeocoder = [[CLGeocoder alloc] init] ;
-//    [self.someGeocoder reverseGeocodeLocation: locClass completionHandler:^(NSArray *placemarks, NSError *error)
-//     {
-//         if (error == nil && [placemarks count]>0)
-//         {
-//             CLPlacemark *placemark = [placemarks objectAtIndex:0];
-//             
-//             //отримуєм місто
-//             [newTitle appendString: placemark.locality];
-//
-//
-//             
-//             NSArray *ann = [self.map annotations];
-//             
-//             //приколи з видаленням останнього піна і створенням його знову
-//             [self.map removeAnnotation:[ann lastObject]];
-//             // [self.map addAnnotation:touchPin];
-//             
-//             touchPin = [[ MKPointAnnotation alloc] init];
-//             touchPin.coordinate = location;
-//             touchPin.title = newTitle;
-//             [self.map addAnnotation:touchPin]; //на карті в місці натиснення відображається стандартний червоний пін
-//             
-//             UIAlertView *addNewPinView = [[UIAlertView alloc] initWithTitle:@"Do you want to add this city to your collection?" message: newTitle delegate:self cancelButtonTitle:@"No" otherButtonTitles:@"Yes", nil];
-//             
-//             [addNewPinView show];
-//             
-//             //Сюди можна додати якийсь функціонал, який додає
-//             // координати в новий айтем або - тепер уже  - в бд
-//             //location.latitude,location.longitude
-//             
-//             
-//             // NSLog(@"%@",placemark.locality);
-//         }
-//         else if ((error == nil) && [placemarks count]==0)
-//         {
-//             NSLog(@"No results");
-//             
-//         }
-//         else if(error!=nil)
-//         {
-//             NSLog(@"Error!");
-//         }
-//    
-//         
-//     }];
-//    
-//    
-////залишає (відмальовує знову) пін та карті
-// //  touchPin.coordinate = location;
-// //  touchPin.title = newTitle;
-// //  [self.map addAnnotation:touchPin];
-//    
-//    //NSLog(@"Location found from Map: %f %f",location.latitude,location.longitude);
-//    
-//}
-
 
 @end

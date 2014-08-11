@@ -12,10 +12,19 @@
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
                     <connections>
+                        <outlet property="searchDisplayController" destination="dJF-Fj-oxb" id="IPI-h2-iz1"/>
                         <segue destination="pGg-6v-bdr" kind="relationship" relationship="rootViewController" id="RxB-wf-QIq"/>
                     </connections>
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="eq9-QA-ai8" sceneMemberID="firstResponder"/>
+                <searchDisplayController id="dJF-Fj-oxb">
+                    <connections>
+                        <outlet property="delegate" destination="rS3-R9-Ivy" id="SFP-Lb-rX3"/>
+                        <outlet property="searchContentsController" destination="rS3-R9-Ivy" id="USv-NB-BHd"/>
+                        <outlet property="searchResultsDataSource" destination="rS3-R9-Ivy" id="4Jb-XE-hGH"/>
+                        <outlet property="searchResultsDelegate" destination="rS3-R9-Ivy" id="BnE-PD-P7L"/>
+                    </connections>
+                </searchDisplayController>
             </objects>
             <point key="canvasLocation" x="-1" y="64"/>
         </scene>
@@ -27,9 +36,17 @@
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <searchBar key="tableHeaderView" contentMode="redraw" id="eDH-qz-JzV">
+                            <rect key="frame" x="0.0" y="64" width="320" height="44"/>
+                            <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
+                            <textInputTraits key="textInputTraits"/>
+                            <connections>
+                                <outlet property="delegate" destination="pGg-6v-bdr" id="ANo-Ya-yQU"/>
+                            </connections>
+                        </searchBar>
                         <prototypes>
                             <tableViewCell contentMode="scaleToFill" selectionStyle="blue" accessoryType="disclosureIndicator" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="Cell" textLabel="2pz-XF-uhl" style="IBUITableViewCellStyleDefault" id="m0d-ak-lc9">
-                                <rect key="frame" x="0.0" y="86" width="320" height="44"/>
+                                <rect key="frame" x="0.0" y="130" width="320" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="m0d-ak-lc9" id="YBU-pp-jMu">
                                     <rect key="frame" x="0.0" y="0.0" width="287" height="43"/>
@@ -57,8 +74,20 @@
                         </connections>
                     </tableView>
                     <navigationItem key="navigationItem" title="Master" id="tQt-TN-PWz"/>
+                    <connections>
+                        <outlet property="searchDisplayController" destination="gWm-0V-bcp" id="FQG-RO-tE9"/>
+                    </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="6Cn-md-YlS" sceneMemberID="firstResponder"/>
+                <searchDisplayController id="gWm-0V-bcp">
+                    <connections>
+                        <outlet property="delegate" destination="pGg-6v-bdr" id="Jcg-Uk-OV8"/>
+                        <outlet property="searchBar" destination="eDH-qz-JzV" id="GHV-b0-05k"/>
+                        <outlet property="searchContentsController" destination="pGg-6v-bdr" id="NIc-kL-aP4"/>
+                        <outlet property="searchResultsDataSource" destination="pGg-6v-bdr" id="RLV-TM-YNw"/>
+                        <outlet property="searchResultsDelegate" destination="pGg-6v-bdr" id="8k1-Iy-Xgy"/>
+                    </connections>
+                </searchDisplayController>
             </objects>
             <point key="canvasLocation" x="459" y="64"/>
         </scene>

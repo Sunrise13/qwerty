@@ -61,7 +61,6 @@ CLPlacemark *thePlacemark;
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
 }
 
 // Adding the city
@@ -114,16 +113,16 @@ CLPlacemark *thePlacemark;
     CLLocationCoordinate2D location =
     [self.detailViewController.map convertPoint:touchPoint toCoordinateFromView:self.detailViewController.map];
     
+    CLGeocoder * geocoder = [[CLGeocoder alloc] init];
     CLLocation * locClass = [[CLLocation alloc] initWithLatitude:location.latitude longitude:location.longitude];
-    
-    self.detailViewController.someGeocoder = [[CLGeocoder alloc] init] ;
-    [self.detailViewController.someGeocoder reverseGeocodeLocation: locClass completionHandler:^(NSArray *placemarks, NSError *error)
+
+    [geocoder reverseGeocodeLocation: locClass completionHandler:^(NSArray *placemarks, NSError *error)
      {
          if (error == nil && [placemarks count]>0)
          {
              CLPlacemark *placemark = [placemarks objectAtIndex:0];
-             //отримуєм місто
              
+             //getting the city by pressing if there is a city
              if (placemark.locality) {
                  [newTitle appendString: placemark.locality];
                  
@@ -157,7 +156,7 @@ CLPlacemark *thePlacemark;
          }
          else if(error!=nil)
          {
-             NSLog(@"Error!");
+             NSLog(@"Error! %@", [error description]);
          }
          
          

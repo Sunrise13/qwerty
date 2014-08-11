@@ -9,20 +9,26 @@
 #import <UIKit/UIKit.h>
 #import <MapKit/MapKit.h>
 #import "BNRMasterViewController.h"
+#import "MapTileOverlay.h"
 
 @interface BNRDetailViewController : UIViewController <UISplitViewControllerDelegate, MKMapViewDelegate, UIAlertViewDelegate>
 
 @property (strong, nonatomic) id detailItem;
 
+@property (weak, nonatomic) BNRMasterViewController * master; //pointer to MasterViewController
 @property (weak, nonatomic) IBOutlet MKMapView *map;
-@property (strong, nonatomic) NSMutableArray *pinArr;
-@property (weak, nonatomic) BNRMasterViewController * master;
+
+
+//Ostap
 @property (strong, nonatomic)  __block NSMutableDictionary * placemarks;
+@property (strong, nonatomic) NSMutableArray *pinArr;
 @property (strong, nonatomic) NSMutableArray *pinNameArr;
 @property (strong, nonatomic) MKRoute *routeDetails;
-@property (nonatomic,strong) CLGeocoder *someGeocoder;
+@property (strong, nonatomic) MapTileOverlay *tileOverlay;
+
+//Sasha
 @property (nonatomic, strong) UILongPressGestureRecognizer * longPressGestureRecognizer;
 
 
-- (void) multiNavigation:(NSNotification *)n;
+- (void) navigation:(NSNotification *)n;
 @end
