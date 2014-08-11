@@ -63,6 +63,7 @@ static Route route;
         MKCoordinateSpan span = MKCoordinateSpanMake(0.2, 0.2);
         MKCoordinateRegion reg = MKCoordinateRegionMake(center, span);
         
+        
         [self.map setRegion:reg animated:YES];
     }
 }
@@ -154,9 +155,7 @@ static Route route;
             [self.buttonsForMultinavigation setValue:createRouteButton forKey:@"Polygon"];
             [self.map addSubview:createRouteButton];
         }
-        
-        
-        
+
     }
 
 }
@@ -179,11 +178,11 @@ static Route route;
     for(int i=0; i<[pathes count]; i++)
     {
         
-        CLGeocoder *geo=[CLGeocoder new];
+        CLGeocoder *geocoder=[CLGeocoder new];
         pinItem* currentItem = self.master.managedObjs[[(NSIndexPath*)pathes[i] row]];
         CLLocation *loc=[[CLLocation alloc] initWithLatitude: [currentItem.lat doubleValue]
                                                 longitude:[currentItem.lon doubleValue]];
-        [geo reverseGeocodeLocation:loc
+        [geocoder reverseGeocodeLocation:loc
                   completionHandler:^(NSArray *placemark, NSError *error)
                 {
                     if (error)
@@ -219,10 +218,25 @@ static Route route;
         }
         
     }
+    
+
+    self.dist.frame=CGRectMake(500, 650, 200, 28);
+    self.dist.borderStyle=UITextBorderStyleNone;
+    self.dist.textAlignment=NSTextAlignmentCenter;
+    self.dist.alpha=1;
+    
+    __block NSMutableString * renderDistance = [[NSMutableString alloc] initWithString:@"Distance: "];
+    
     NSLog(@"In calculateAndShowRoutes");
-       NSArray * pathes=[self.master.table indexPathsForSelectedRows];
+    NSArray * pathes=[self.master.table indexPathsForSelectedRows];
+    
+    __block double routeDistance = 0.0;
+    __block double centerX = ((CLPlacemark *)(self.placemarks[[NSNumber numberWithInt:0]][0])).location.coordinate.latitude;
+    __block double centerY = ((CLPlacemark *)(self.placemarks[[NSNumber numberWithInt:0]][0])).location.coordinate.longitude;
+    
     for(int i=0; i<=[pathes count]-2; i++)
     {
+        
         MKDirectionsRequest *directionRequest=[MKDirectionsRequest new];
         
         directionRequest.source=[[MKMapItem alloc] initWithPlacemark:[[MKPlacemark alloc] initWithPlacemark:self.placemarks[[NSNumber numberWithInt:i]][0]]];
@@ -234,10 +248,33 @@ static Route route;
             } else {
                 NSLog(@"create route with %d, and %d", i, i+1);
                 _routeDetails = response.routes.lastObject;
+                routeDistance += _routeDetails.distance;
                 _map.delegate=self;
                 [_map addOverlay:_routeDetails.polyline];
+                
+                centerX += ((CLPlacemark *)(self.placemarks[[NSNumber numberWithInt:i+1]][0])).location.coordinate.latitude;
+                
+                centerY += ((CLPlacemark *)(self.placemarks[[NSNumber numberWithInt:i+1]][0])).location.coordinate.longitude;
+                
+                if (i==[pathes count]-2)
+                {
+                    [renderDistance appendString:[NSString stringWithFormat:@"%.2f", routeDistance]];
+                    self.dist.text = renderDistance;
+                    
+                    [self.map addSubview:self.dist];
+                    centerX /= [pathes count];
+                    centerY /= [pathes count];
+                    
+                    CLLocationCoordinate2D center = CLLocationCoordinate2DMake(centerX,  centerY);
+//Sasha need to change it here  -- define span
+                    MKCoordinateSpan span = MKCoordinateSpanMake(10.0, 10.0);
+                    MKCoordinateRegion reg = MKCoordinateRegionMake(center, span);
+                    [self.map setRegion:reg animated:YES];
                 }
+                
+            }
         }];
+
     }
     
     
@@ -268,10 +305,11 @@ static Route route;
 
 - (void)viewDidLoad
 {
-    self.pinArr=[NSMutableArray new];
+
     [super viewDidLoad];
     [self configureView];
-
+    self.pinArr=[NSMutableArray new];
+    self.dist = [UITextField new];
     
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(navigation:)
@@ -284,6 +322,7 @@ static Route route;
     
     self.placemarks=[NSMutableDictionary new];
     self.pinNameArr=[NSMutableArray new];
+
     self.buttonsForMultinavigation=[NSMutableDictionary new];
     self.map.showsUserLocation = YES;
     self.map.delegate=self;
@@ -296,6 +335,8 @@ static Route route;
     
     y=10;
     [self.map removeAnnotations:self.pinArr];
+    [self.dist removeFromSuperview];
+
     [self.pinArr removeAllObjects];
     for( UITextField * txt in _pinNameArr)
     {

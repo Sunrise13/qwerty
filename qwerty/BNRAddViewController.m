@@ -182,6 +182,7 @@ CLPlacemark *thePlacemark;
              }
              
          }
+         
          else if ((error == nil) && [placemarks count]==0)
          {
              NSLog(@"No results");
@@ -194,7 +195,6 @@ CLPlacemark *thePlacemark;
          
          
      }];
-    
 }
 
 @end
