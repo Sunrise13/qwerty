@@ -12,8 +12,9 @@
 
 #import "BNRAddViewController.h"
 
-@interface BNRMasterViewController () <BNRAddViewControllerDelegate> {
-    NSMutableArray *_objects;
+@interface BNRMasterViewController () <BNRAddViewControllerDelegate>
+{
+    
 }
 
 @end
@@ -22,7 +23,8 @@
 
 - (void)awakeFromNib
 {
-    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
+    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad)
+    {
         self.clearsSelectionOnViewWillAppear = NO;
         self.preferredContentSize = CGSizeMake(320.0, 600.0);
     }
@@ -33,11 +35,6 @@
 {
     [super viewDidLoad];
     self.detailViewController = (BNRDetailViewController *)[[self.splitViewController.viewControllers lastObject] topViewController];
-    
-   // NSURL *url = [[NSBundle mainBundle] URLForResource:@"PropertyList" withExtension:@"plist"];
-   // self.arr = [NSMutableArray arrayWithContentsOfURL:url];
-   // [self.table setSeparatorStyle:UITableViewCellSeparatorStyleNone];
-   // _table.allowsMultipleSelection=YES;
     
     if(self.db)
     {
@@ -53,15 +50,6 @@
     // Dispose of any resources that can be recreated.
 }
 
-- (void)insertNewObject:(id)sender
-{
-    if (!_objects) {
-        _objects = [[NSMutableArray alloc] init];
-    }
-    [_objects insertObject:[NSDate date] atIndex:0];
-    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:0 inSection:0];
-    [self.tableView insertRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
-}
 
 #pragma mark - Table View
 
@@ -79,11 +67,10 @@
 {
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell" forIndexPath:indexPath];
     cell.selectionStyle=UITableViewCellSelectionStyleNone;
-
     
     NSString *cityName = ((pinItem *)self.managedObjs[indexPath.row]).city ;
-    
     cell.textLabel.text = cityName;
+    
     return cell;
 }
 
@@ -93,28 +80,14 @@
     return YES;
 }
 
-//- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
-//{
-//    if (editingStyle == UITableViewCellEditingStyleDelete) {
-//        [_objects removeObjectAtIndex:indexPath.row];
-//        [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
-//    } else if (editingStyle == UITableViewCellEditingStyleInsert) {
-//        // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view.
-//    }
-//}
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
-        NSDate *object = _objects[indexPath.row];
-        self.detailViewController.detailItem = object;
-    }
-    
     
     pinItem * item=self.managedObjs[indexPath.row];
     NSDictionary *dic =[[NSDictionary alloc] initWithObjectsAndKeys:item, @"managedObj", nil];
     
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"multiNavigation"
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"navigation"
                                                         object:self
                                                       userInfo:dic];
 }
@@ -124,7 +97,6 @@
     if ([[segue identifier] isEqualToString:@"showDetail"]) {
         NSIndexPath *indexPath = [self.tableView indexPathForSelectedRow];
         NSDictionary *dic = self.managedObjs[indexPath.row];
-       // NSString *cityName =dic[@"city"];
         
         [[segue destinationViewController] setDetailItem:dic];
     }
@@ -146,24 +118,13 @@
     {
         self.table.allowsMultipleSelection=NO;
     }
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"prepareForMulti" object:self userInfo:nil];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"navigationModeChanged" object:self userInfo:nil]; //navigationModeChanged6
         
 }
 
 - (void)AddViewController:(BNRAddViewController *)controller didAddCity:(NSDictionary *)city
 {
-//    BOOL ok = true;
-//    for(NSDictionary*ar in _arr)
-//    {
-//        if([ar[@"city"]isEqualToString:city[@"city"]])
-//            ok = false;
-//    }
-    
-//    if(![[controller.search text] isEqual: @""] && ok)
-//    {
-//        [_arr addObject:city];
         [self.tableView reloadData];
-//    }
 }
 
 

@@ -12,8 +12,6 @@
 #import "pinItem.h"
 
 static NSInteger y=10;
-static BOOL first=true;
-static BOOL second=true;
 typedef enum
 {
     RouteAuto,
@@ -69,7 +67,7 @@ static Route route;
     }
 }
 
-- (void)navigateTo:(NSNotification *)n
+- (void)createPinAndSetRegion:(NSNotification *)n
 {
     
     NSNumber *lat = ((pinItem *)n.userInfo[@"managedObj"]).lat;
@@ -91,7 +89,7 @@ static Route route;
 
 }
 
-- (void) multiNavigation:(NSNotification *)n
+- (void) navigation:(NSNotification *)n
 {
 
     BOOL multipleSelection=((BNRMasterViewController *)n.object).table.allowsMultipleSelection;
@@ -107,7 +105,7 @@ static Route route;
         
     }
 
-    [self navigateTo:n];
+    [self createPinAndSetRegion:n];
     
     self.master=n.object;
     NSArray * pathes=[((BNRMasterViewController *)n.object).table indexPathsForSelectedRows];
@@ -129,10 +127,9 @@ static Route route;
            if(multipleSelection)
                y+=35;
         
-        if([self.pinNameArr count]>=2&&first==true)
+        if([self.pinNameArr count]==2)
         {
             
-            first=false;
             UIButton * createRouteButton=[UIButton new];
             createRouteButton.frame=CGRectMake(250, 10, 200, 25);
             [createRouteButton setTitle:@"Auto Route" forState:UIControlStateNormal];
@@ -144,11 +141,10 @@ static Route route;
             [self.map addSubview:createRouteButton];
             
         }
-        if([self.pinNameArr count]>=3&&second==true)
+        if([self.pinNameArr count]==3)
         {
             route=RoutePoligon;
             
-            second=false;
             UIButton * createRouteButton=[UIButton new];
             createRouteButton.frame=CGRectMake(250, 45, 200, 25);
             [createRouteButton setTitle:@"Polygon" forState:UIControlStateNormal];
@@ -193,7 +189,6 @@ static Route route;
                     if (error)
                     {
                         NSLog(@"Geocode failed with error: %@", error);
-                        //[self displayError:error];
                         return;
                     }
                     NSLog(@"Create placemark %d", i);
@@ -216,8 +211,14 @@ static Route route;
 - (void)calculateAndShowRoutes
 {
     NSArray* arr=[self.map overlays];
-    [self.map removeOverlays:arr];
-    [self reloadTileOverlay];
+    for(id<MKOverlay> overlay in arr)
+    {
+        if(![overlay isKindOfClass:[MKTileOverlay class]])
+        {
+            [self.map removeOverlay:overlay];
+        }
+        
+    }
     NSLog(@"In calculateAndShowRoutes");
        NSArray * pathes=[self.master.table indexPathsForSelectedRows];
     for(int i=0; i<=[pathes count]-2; i++)
@@ -245,10 +246,15 @@ static Route route;
 - (void) calculateAndShowPolygon
 {
     NSArray* arr=[self.map overlays];
-    [self.map removeOverlays:arr];
-    [self reloadTileOverlay];
+    for(id<MKOverlay> overlay in arr)
+    {
+        if(![overlay isKindOfClass:[MKTileOverlay class]])
+        {
+            [self.map removeOverlay:overlay];
+        }
+        
+    }
     NSLog(@"In calculateAndShowPolygon");
-    //NSArray * pathes=[self.master.table indexPathsForSelectedRows];
     CLLocationCoordinate2D points[[self.placemarks count]];
     int i=0;
     for(NSNumber *key in self.placemarks)
@@ -264,26 +270,16 @@ static Route route;
 {
     self.pinArr=[NSMutableArray new];
     [super viewDidLoad];
-	// Do any additional setup after loading the view, typically from a nib.
     [self configureView];
+
     
     [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(navigateTo:)
-                                                 name:@"navigateTo"
-                                               object:nil];
-//    
-//    [[NSNotificationCenter defaultCenter] addObserver:self
-//                                             selector:@selector(closeApp:)
-//                                                 name:@"UIApplicationDidEnterBackgroundNotification"
-//                                               object:nil];
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(multiNavigation:)
-                                                 name:@"multiNavigation"
+                                             selector:@selector(navigation:)
+                                                 name:@"navigation"
                                                object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(prepareForMulti:)
-                                                 name:@"prepareForMulti"
+                                             selector:@selector(navigationModeChanged:)
+                                                 name:@"navigationModeChanged"
                                                object:nil];
     
     self.placemarks=[NSMutableDictionary new];
@@ -293,15 +289,9 @@ static Route route;
     self.map.delegate=self;
     [self reloadTileOverlay];
     
-//    self.longPressGestureRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(handleLongPressGestures:)];
-//    
-//    self.longPressGestureRecognizer.numberOfTouchesRequired = 1;
-//    self.longPressGestureRecognizer.allowableMovement = 50.0;
-//    self.longPressGestureRecognizer.minimumPressDuration = 1.5;
-//    [self.view addGestureRecognizer:self.longPressGestureRecognizer];
 }
 
-- (void)prepareForMulti:(NSNotificationCenter *)n
+- (void)navigationModeChanged:(NSNotificationCenter *)n
 {
     
     y=10;
@@ -318,8 +308,14 @@ static Route route;
         [self.master.table deselectRowAtIndexPath:path animated:NO];
     }
     NSArray* arr=[self.map overlays];
-    [self.map removeOverlays:arr];
-    [self reloadTileOverlay];
+    for(id<MKOverlay> overlay in arr)
+    {
+        if(![overlay isKindOfClass:[MKTileOverlay class]])
+        {
+            [self.map removeOverlay:overlay];
+        }
+        
+    }
     arr=[self.buttonsForMultinavigation allKeys];
     
     for(NSString *key in self.buttonsForMultinavigation)
@@ -327,8 +323,6 @@ static Route route;
         [self.buttonsForMultinavigation[key] removeFromSuperview];
     }
     [self.buttonsForMultinavigation removeAllObjects];
-    first=true;
-    second=true;
     
 }
 
@@ -393,7 +387,7 @@ static Route route;
 
     MKPolylineRenderer  * routeLineRenderer = [[MKPolylineRenderer alloc] initWithPolyline:overlay];
     routeLineRenderer.strokeColor = [UIColor redColor];
-    routeLineRenderer.lineWidth = 7;
+    routeLineRenderer.lineWidth = 5;
     return routeLineRenderer;
     }
 }

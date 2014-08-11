@@ -15,16 +15,20 @@
 
 @property (strong, nonatomic) id detailItem;
 
+@property (weak, nonatomic) BNRMasterViewController * master; //pointer to MasterViewController
 @property (weak, nonatomic) IBOutlet MKMapView *map;
-@property (strong, nonatomic) MapTileOverlay *tileOverlay;
-@property (strong, nonatomic) NSMutableArray *pinArr;
-@property (weak, nonatomic) BNRMasterViewController * master;
+
+
+//Ostap
 @property (strong, nonatomic)  __block NSMutableDictionary * placemarks;
+@property (strong, nonatomic) NSMutableArray *pinArr;
 @property (strong, nonatomic) NSMutableArray *pinNameArr;
 @property (strong, nonatomic) MKRoute *routeDetails;
+@property (strong, nonatomic) MapTileOverlay *tileOverlay;
+
 @property (nonatomic,strong) CLGeocoder *someGeocoder;
 @property (nonatomic, strong) UILongPressGestureRecognizer * longPressGestureRecognizer;
 
 
-- (void) multiNavigation:(NSNotification *)n;
+- (void) navigation:(NSNotification *)n;
 @end
