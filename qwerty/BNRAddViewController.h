@@ -32,7 +32,8 @@
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *adButton;
 @property (weak, nonatomic) IBOutlet UILabel *longitudeLabel;
 @property (weak, nonatomic) IBOutlet UILabel *latitudeLabel;
-@property (strong, nonatomic)  __block NSMutableArray * placemarks;
+//@property (strong, nonatomic)  __block NSMutableArray * placemarks;
+
 
 
 @end

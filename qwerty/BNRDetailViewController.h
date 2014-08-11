@@ -26,7 +26,7 @@
 @property (strong, nonatomic) MKRoute *routeDetails;
 @property (strong, nonatomic) MapTileOverlay *tileOverlay;
 
-@property (nonatomic,strong) CLGeocoder *someGeocoder;
+//Sasha
 @property (nonatomic, strong) UILongPressGestureRecognizer * longPressGestureRecognizer;
 
 
