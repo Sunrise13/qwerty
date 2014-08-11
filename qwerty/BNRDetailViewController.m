@@ -184,8 +184,9 @@ static Route route;
     {
         
         CLGeocoder *geo=[CLGeocoder new];
-        CLLocation *loc=[[CLLocation alloc] initWithLatitude:([((pinItem *)self.master.managedObjs[[(NSIndexPath*)pathes[i] row]]).lat doubleValue])
-                                                   longitude:([((pinItem *)self.master.managedObjs[[(NSIndexPath*)pathes[i] row]]).lon doubleValue])];
+        pinItem* currentItem = self.master.managedObjs[[(NSIndexPath*)pathes[i] row]];
+        CLLocation *loc=[[CLLocation alloc] initWithLatitude: [currentItem.lat doubleValue]
+                                                longitude:[currentItem.lon doubleValue]];
         [geo reverseGeocodeLocation:loc
                   completionHandler:^(NSArray *placemark, NSError *error)
                 {

@@ -71,6 +71,9 @@ CLPlacemark *thePlacemark;
     [context save:nil];
     [context reset];
   
+    //SEL asd = @selector(addCity:);
+    //[self addCity:nil];
+    //[self performSelectorInBackground:asd withObject:nil];
     
     ((BNRMasterViewController *)self.delegate3).managedObjs=[((BNRMasterViewController *)self.delegate3).db getManagedObjArray];
   
