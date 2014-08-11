@@ -189,7 +189,7 @@ CLPlacemark *thePlacemark;
          }
          else if(error!=nil)
          {
-             NSLog(@"Error! %@ %s, %c", [error description], __FILE__, __LINE__);
+             NSLog(@"Error! %@", [error description]);
          }
          
          

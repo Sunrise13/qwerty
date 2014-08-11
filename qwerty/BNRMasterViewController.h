@@ -24,7 +24,7 @@
 
 @property (weak, nonatomic) BNRDetailViewController *detailViewController;
 @property (weak, nonatomic) IBOutlet UITableView *table;
-@property (nonatomic, strong) NSMutableArray *arr;
+//@property (nonatomic, strong) NSMutableArray *arr;
 @property (nonatomic, strong) NSMutableArray *managedObjs;
 @property (nonatomic, strong) CoreDataHelper *db;
 
