@@ -9,12 +9,14 @@
 #import <UIKit/UIKit.h>
 #import <MapKit/MapKit.h>
 #import "BNRMasterViewController.h"
+#import "MapTileOverlay.h"
 
 @interface BNRDetailViewController : UIViewController <UISplitViewControllerDelegate, MKMapViewDelegate, UIAlertViewDelegate>
 
 @property (strong, nonatomic) id detailItem;
 
 @property (weak, nonatomic) IBOutlet MKMapView *map;
+@property (strong, nonatomic) MapTileOverlay *tileOverlay;
 @property (strong, nonatomic) NSMutableArray *pinArr;
 @property (weak, nonatomic) BNRMasterViewController * master;
 @property (strong, nonatomic)  __block NSMutableDictionary * placemarks;

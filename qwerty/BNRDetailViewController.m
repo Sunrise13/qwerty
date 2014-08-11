@@ -188,8 +188,8 @@ static Route route;
     {
        
         CLGeocoder *geo=[CLGeocoder new];
-        CLLocation *loc=[[CLLocation alloc] initWithLatitude:([self.master.arr[[(NSIndexPath*)pathes[i] row]][@"lat"] doubleValue])
-                                                   longitude:([self.master.arr[[(NSIndexPath*)pathes[i] row]][@"long"] doubleValue])];
+        CLLocation *loc=[[CLLocation alloc] initWithLatitude:([((pinItem *)self.master.managedObjs[[(NSIndexPath*)pathes[i] row]]).lat doubleValue])
+                                                   longitude:([((pinItem *)self.master.managedObjs[[(NSIndexPath*)pathes[i] row]]).lon doubleValue])];
         [geo reverseGeocodeLocation:loc
                   completionHandler:^(NSArray *placemark, NSError *error)
                 {
@@ -220,6 +220,7 @@ static Route route;
 {
     NSArray* arr=[self.map overlays];
     [self.map removeOverlays:arr];
+    [self reloadTileOverlay];
     NSLog(@"In calculateAndShowRoutes");
        NSArray * pathes=[self.master.table indexPathsForSelectedRows];
     for(int i=0; i<=[pathes count]-2; i++)
@@ -248,6 +249,7 @@ static Route route;
 {
     NSArray* arr=[self.map overlays];
     [self.map removeOverlays:arr];
+    [self reloadTileOverlay];
     NSLog(@"In calculateAndShowPolygon");
     //NSArray * pathes=[self.master.table indexPathsForSelectedRows];
     CLLocationCoordinate2D points[[self.placemarks count]];
@@ -291,6 +293,8 @@ static Route route;
     self.pinNameArr=[NSMutableArray new];
     self.buttonsForMultinavigation=[NSMutableDictionary new];
     self.map.showsUserLocation = YES;
+    self.map.delegate=self;
+    [self reloadTileOverlay];
     
 //    self.longPressGestureRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(handleLongPressGestures:)];
 //    
@@ -302,6 +306,7 @@ static Route route;
 
 - (void)prepareForMulti:(NSNotificationCenter *)n
 {
+    
     y=10;
     [self.map removeAnnotations:self.pinArr];
     [self.pinArr removeAllObjects];
@@ -317,6 +322,7 @@ static Route route;
     }
     NSArray* arr=[self.map overlays];
     [self.map removeOverlays:arr];
+    [self reloadTileOverlay];
     arr=[self.buttonsForMultinavigation allKeys];
     
     for(NSString *key in self.buttonsForMultinavigation)
@@ -377,12 +383,20 @@ static Route route;
         
         return aRenderer;
     }
+    if([overlay isKindOfClass:[MKTileOverlay class]]) {
+        MKTileOverlay *tileOverlay = (MKTileOverlay *)overlay;
+        MKTileOverlayRenderer *renderer = nil;
+        
+        renderer = [[MKTileOverlayRenderer alloc] initWithTileOverlay:tileOverlay];
+        
+        
+        return renderer;}
     else
     {
 
     MKPolylineRenderer  * routeLineRenderer = [[MKPolylineRenderer alloc] initWithPolyline:overlay];
     routeLineRenderer.strokeColor = [UIColor redColor];
-    routeLineRenderer.lineWidth = 5;
+    routeLineRenderer.lineWidth = 7;
     return routeLineRenderer;
     }
 }
@@ -402,77 +416,29 @@ static Route route;
     }
 }
 
-////selector for long pressing on the map
-//- (void) handleLongPressGestures:(UILongPressGestureRecognizer *)gestureRecognizer
-//{
-//    if (gestureRecognizer.state != UIGestureRecognizerStateBegan)
-//        return;
-//    NSMutableString * newTitle = [NSMutableString new];
-//
-//    __block MKPointAnnotation *touchPin = [[ MKPointAnnotation alloc] init];
-//    
-//    CGPoint touchPoint = [gestureRecognizer locationInView:self.map];
-//    CLLocationCoordinate2D location =
-//    [self.map convertPoint:touchPoint toCoordinateFromView:self.map];
-//    
-//    CLLocation * locClass = [[CLLocation alloc] initWithLatitude:location.latitude longitude:location.longitude];
-//    
-//    self.someGeocoder = [[CLGeocoder alloc] init] ;
-//    [self.someGeocoder reverseGeocodeLocation: locClass completionHandler:^(NSArray *placemarks, NSError *error)
-//     {
-//         if (error == nil && [placemarks count]>0)
-//         {
-//             CLPlacemark *placemark = [placemarks objectAtIndex:0];
-//             
-//             //отримуєм місто
-//             [newTitle appendString: placemark.locality];
-//
-//
-//             
-//             NSArray *ann = [self.map annotations];
-//             
-//             //приколи з видаленням останнього піна і створенням його знову
-//             [self.map removeAnnotation:[ann lastObject]];
-//             // [self.map addAnnotation:touchPin];
-//             
-//             touchPin = [[ MKPointAnnotation alloc] init];
-//             touchPin.coordinate = location;
-//             touchPin.title = newTitle;
-//             [self.map addAnnotation:touchPin]; //на карті в місці натиснення відображається стандартний червоний пін
-//             
-//             UIAlertView *addNewPinView = [[UIAlertView alloc] initWithTitle:@"Do you want to add this city to your collection?" message: newTitle delegate:self cancelButtonTitle:@"No" otherButtonTitles:@"Yes", nil];
-//             
-//             [addNewPinView show];
-//             
-//             //Сюди можна додати якийсь функціонал, який додає
-//             // координати в новий айтем або - тепер уже  - в бд
-//             //location.latitude,location.longitude
-//             
-//             
-//             // NSLog(@"%@",placemark.locality);
-//         }
-//         else if ((error == nil) && [placemarks count]==0)
-//         {
-//             NSLog(@"No results");
-//             
-//         }
-//         else if(error!=nil)
-//         {
-//             NSLog(@"Error!");
-//         }
-//    
-//         
-//     }];
-//    
-//    
-////залишає (відмальовує знову) пін та карті
-// //  touchPin.coordinate = location;
-// //  touchPin.title = newTitle;
-// //  [self.map addAnnotation:touchPin];
-//    
-//    //NSLog(@"Location found from Map: %f %f",location.latitude,location.longitude);
-//    
-//}
+-(void)reloadTileOverlay {
+    
+    // remove existing map tile overlay
+    if(self.tileOverlay) {
+        [self.map removeOverlay:self.tileOverlay];
+    }
+    
+    
+    NSString *urlTemplate = nil;
+   urlTemplate = @"http://mt0.google.com/vt/x={x}&y={y}&z={z}";
+    //urlTemplate=@"http://otile1.mqcdn.com/tiles/1.0.0/map/{z}/{x}/{y}.png";
+    //http://static-maps.yandex.ru/1.x/?ll={x},{y}&size=450,450&z={z}&l=map
+    //urlTemplate=@"http://static-maps.yandex.ru/1.x/?ll={x},{y}&size=256,256&z={z}&l=map";
+    self.tileOverlay = [[MapTileOverlay alloc] initWithURLTemplate:urlTemplate];
+    
+    
+    self.tileOverlay.canReplaceMapContent=YES;
+    [self.map addOverlay:self.tileOverlay];
+    
+    
+}
+
+
 
 
 @end
