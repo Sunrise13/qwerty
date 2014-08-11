@@ -9,14 +9,8 @@
 #import <UIKit/UIKit.h>
 #import "BNRAddViewController.h"
 #import "CoreDataHelper.h"
+
 @class BNRAddViewController;
-@protocol hello <NSObject>
-
-- (void)AddViewController:(BNRAddViewController *)controller didAddCity:(NSDictionary *)city;
-
-@end
-
-
 @class BNRDetailViewController;
 
 @interface BNRMasterViewController : UITableViewController <hello>

@@ -129,8 +129,8 @@
     
     if ([segue.identifier isEqualToString:@"AddCity"]) {
         BNRAddViewController *PController = segue.destinationViewController;
-        PController.delegate = self;
-        PController.detailViewController = self.detailViewController;
+       PController.delegate = self;
+       PController.detailViewController = self.detailViewController;
     }
 }
 

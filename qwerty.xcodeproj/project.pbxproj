@@ -25,7 +25,7 @@
 		4D461A861987BD5A00E08BDA /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4D461A621987BD5900E08BDA /* UIKit.framework */; };
 		4D461A8E1987BD5A00E08BDA /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 4D461A8C1987BD5A00E08BDA /* InfoPlist.strings */; };
 		4D461A901987BD5A00E08BDA /* qwertyTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D461A8F1987BD5A00E08BDA /* qwertyTests.m */; };
-		4D8B7096198B8E450010D5B1 /* BNRAddViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D8B7095198B8E450010D5B1 /* BNRAddViewController.m */; };
+		4D757E2819939BC90030819A /* BNRAddViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D757E2719939BC90030819A /* BNRAddViewController.m */; };
 		D247EDCD19926501008A9140 /* CoreDataHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = D247EDCC19926501008A9140 /* CoreDataHelper.m */; };
 		D247EDD0199268CE008A9140 /* mapModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = D247EDCE199268CE008A9140 /* mapModel.xcdatamodeld */; };
 		D247EDD21992698A008A9140 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D247EDD11992698A008A9140 /* CoreData.framework */; };
@@ -47,6 +47,7 @@
 		4D02442A1987C49700763295 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
 		4D02442F1987CC9600763295 /* PropertyList.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = PropertyList.plist; sourceTree = "<group>"; };
 		4D09F200198BD05B00708DF8 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
+		4D410F2F199520E0001DD30E /* SBJson.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SBJson.h; sourceTree = "<group>"; };
 		4D461A5B1987BD5900E08BDA /* qwerty.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = qwerty.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4D461A5E1987BD5900E08BDA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		4D461A601987BD5900E08BDA /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -68,8 +69,8 @@
 		4D461A8B1987BD5A00E08BDA /* qwertyTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "qwertyTests-Info.plist"; sourceTree = "<group>"; };
 		4D461A8D1987BD5A00E08BDA /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		4D461A8F1987BD5A00E08BDA /* qwertyTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = qwertyTests.m; sourceTree = "<group>"; };
-		4D8B7094198B8E450010D5B1 /* BNRAddViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BNRAddViewController.h; sourceTree = "<group>"; };
-		4D8B7095198B8E450010D5B1 /* BNRAddViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BNRAddViewController.m; sourceTree = "<group>"; };
+		4D757E2619939BC90030819A /* BNRAddViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BNRAddViewController.h; sourceTree = "<group>"; };
+		4D757E2719939BC90030819A /* BNRAddViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BNRAddViewController.m; sourceTree = "<group>"; };
 		D247EDCB19926501008A9140 /* CoreDataHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CoreDataHelper.h; sourceTree = "<group>"; };
 		D247EDCC19926501008A9140 /* CoreDataHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CoreDataHelper.m; sourceTree = "<group>"; };
 		D247EDCF199268CE008A9140 /* mapModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = mapModel.xcdatamodel; sourceTree = "<group>"; };
@@ -106,6 +107,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		4D262EB919939851002714E8 /* AddViewController */ = {
+			isa = PBXGroup;
+			children = (
+				4D757E2619939BC90030819A /* BNRAddViewController.h */,
+				4D757E2719939BC90030819A /* BNRAddViewController.m */,
+			);
+			name = AddViewController;
+			sourceTree = "<group>";
+		};
 		4D461A521987BD5900E08BDA = {
 			isa = PBXGroup;
 			children = (
@@ -145,12 +155,12 @@
 				D247EDCA199264E9008A9140 /* CoreData */,
 				4D461A6D1987BD5900E08BDA /* BNRAppDelegate.h */,
 				4D461A6E1987BD5900E08BDA /* BNRAppDelegate.m */,
+				4D262EB919939851002714E8 /* AddViewController */,
 				D2E02DFF19891230000A634E /* Main_iPad.storyboard */,
-				4D8B7094198B8E450010D5B1 /* BNRAddViewController.h */,
-				4D8B7095198B8E450010D5B1 /* BNRAddViewController.m */,
 				4D461A701987BD5900E08BDA /* Main_iPhone.storyboard */,
 				4D461A761987BD5900E08BDA /* BNRMasterViewController.h */,
 				4D461A771987BD5900E08BDA /* BNRMasterViewController.m */,
+				4D410F2F199520E0001DD30E /* SBJson.h */,
 				4D461A791987BD5900E08BDA /* BNRDetailViewController.h */,
 				4D461A7A1987BD5900E08BDA /* BNRDetailViewController.m */,
 				4D461A7C1987BD5900E08BDA /* Images.xcassets */,
@@ -304,8 +314,8 @@
 				D247EDCD19926501008A9140 /* CoreDataHelper.m in Sources */,
 				4D461A7B1987BD5900E08BDA /* BNRDetailViewController.m in Sources */,
 				D247EDD919926C32008A9140 /* pinItem.m in Sources */,
+				4D757E2819939BC90030819A /* BNRAddViewController.m in Sources */,
 				D247EDD0199268CE008A9140 /* mapModel.xcdatamodeld in Sources */,
-				4D8B7096198B8E450010D5B1 /* BNRAddViewController.m in Sources */,
 				4D461A6B1987BD5900E08BDA /* main.m in Sources */,
 				4D461A781987BD5900E08BDA /* BNRMasterViewController.m in Sources */,
 				4D461A6F1987BD5900E08BDA /* BNRAppDelegate.m in Sources */,
