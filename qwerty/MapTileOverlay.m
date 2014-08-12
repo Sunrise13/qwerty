@@ -12,12 +12,71 @@
 
 @implementation MapTileOverlay
 
--(void)loadTileAtPath:(MKTileOverlayPath)path result:(void (^)(NSData *, NSError *))result {
-    NSLog(@"Loading tile x/y/z: %ld/%ld/%ld",(long)path.x,(long)path.y,(long)path.z);
-    [super loadTileAtPath:path result:result];
-    
+
+-(instancetype)initWithURLTemplate:(NSString *)URLTemplate
+{
+    self=[super initWithURLTemplate:URLTemplate];
+    self.setOfConnections=[[NSMutableSet alloc] init];
+    self.dicOfData=[[NSMutableDictionary alloc] init];
+    return self;
     
 }
+
+-(void)loadTileAtPath:(MKTileOverlayPath)path result:(void (^)(NSData *, NSError *))result
+{
+    
+    //NSLog(@"Loading tile x/y/z: %ld/%ld/%ld",(long)path.x,(long)path.y,(long)path.z);
+    
+    NSMutableString *pathToTile=[[NSMutableString alloc]initWithString:[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject]];
+    NSMutableString *pathdd=[[NSMutableString alloc]initWithString:[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject]];
+    [pathdd appendString:@"/{z}{x}{y}.png"];
+    NSString *tileName=[NSString stringWithFormat:@"%ld%ld%ld.png", (long)path.z, (long)path.x, (long)path.y];
+    NSFileManager *fileManager=[NSFileManager defaultManager];
+    [pathToTile appendString:@"/"];
+    [pathToTile appendString:tileName];
+    
+    if([fileManager fileExistsAtPath:pathToTile isDirectory:NO])
+    {
+        
+       NSData *data=[[NSData alloc] initWithContentsOfFile:pathToTile];
+        result(data, nil);
+    }
+    else
+    {
+        NSString *str=[NSString stringWithFormat:@"http://otile1.mqcdn.com/tiles/1.0.0/map/%ld/%ld/%ld.png" ,(long)path.z,(long)path.x, (long)path.y];
+        NSURL *url=[[NSURL alloc] initWithString:str];
+        NSMutableURLRequest *req=[[NSMutableURLRequest alloc]initWithURL:url];
+        req.timeoutInterval=5.0;
+        NSURLConnection *con=[NSURLConnection alloc];
+        //[self.setOfConnections addObject:con];
+        NSArray * arr=@[[[NSMutableData alloc] init], result, pathToTile];
+        [self.dicOfData setObject:arr forKey: [[NSString alloc] initWithFormat:@"%p",con]];
+        [con initWithRequest:req delegate:self];
+       
+
+        
+        
+        
+//        NSData *data=[[NSData alloc]initWithContentsOfURL:url];
+//        
+//        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+//            // Generate the file path
+//              [data writeToFile:pathToTile atomically:YES];
+//            // Save it into file system
+//        });
+        
+      
+       // result(data, nil);
+    }
+
+
+
+}
+
+
+
+
+
 
 -(MKTileOverlayPath)genLatAndLonFromXY:(MKTileOverlayPath)xy
 {
@@ -30,6 +89,58 @@
     return result;
 }
 
+
+
+#pragma mark NSURLConnection Delegate Methods
+
+- (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response {
+    // A response has been received, this is where we initialize the instance var you created
+    // so that we can append data to it in the didReceiveData method
+    // Furthermore, this method is called each time there is a redirect so reinitializing it
+    // also serves to clear it
+    //_responseData = [[NSMutableData alloc] init];
+}
+
+- (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data {
+    // Append the new data to the instance variable you declared
+    NSArray * arr=[self.dicOfData objectForKey:[[NSString alloc]initWithFormat:@"%p", connection ]];
+    [((NSMutableData*)arr[0]) appendData:data];
+    //[_responseData appendData:data];
+}
+
+- (NSCachedURLResponse *)connection:(NSURLConnection *)connection
+                  willCacheResponse:(NSCachedURLResponse*)cachedResponse {
+    // Return nil to indicate not necessary to store a cached response for this connection
+    return nil;
+}
+
+- (void)connectionDidFinishLoading:(NSURLConnection *)connection {
+    // The request is complete and data has been received
+    // You can parse the stuff in your instance variable now
+    NSString *key=[[NSString alloc]initWithFormat:@"%p", connection ];
+    NSArray * arr=[self.dicOfData objectForKey:key];
+    NSMutableData * data=((NSMutableData*)arr[0]);
+    void(^result)(NSData *, NSError *)=((void (^)(NSData *, NSError *))arr[1]);
+    NSString *path=((NSString *) arr[2]);
+    [self.dicOfData removeObjectForKey:key];
+    //[self.setOfConnections removeObject:connection];
+    result(data, nil);
+    [data writeToFile:path atomically:YES];
+
+}
+
+- (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error
+{
+    NSLog(@"ERRRRRROOOOR %@", error);
+    NSString *key=[[NSString alloc]initWithFormat:@"%p", connection ];
+    NSArray * arr=[self.dicOfData objectForKey:key];
+    void(^result)(NSData *, NSError *)=((void (^)(NSData *, NSError *))arr[1]);
+    [self.dicOfData removeObjectForKey:key];
+    //[self.setOfConnections removeObject:connection];
+    result(nil, error);
+    
+
+}
 
 
 //def get_lat_lng_for_number(xtile, ytile, zoom)

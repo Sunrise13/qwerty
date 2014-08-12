@@ -372,7 +372,6 @@ static Route route;
         }
         
     }
-    arr=[self.buttonsForMultinavigation allKeys];
     
     for(NSString *key in self.buttonsForMultinavigation)
     {
