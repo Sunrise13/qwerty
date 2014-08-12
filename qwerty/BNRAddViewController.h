@@ -17,21 +17,19 @@
 
 @protocol hello <NSObject>
 
-- (void)AddViewController:(BNRAddViewController *)controller didAddCity:(NSDictionary *)city;
+- (void)reloadData;
 
 @end
 
 @interface BNRAddViewController : UITableViewController <UISplitViewControllerDelegate, MKMapViewDelegate, UIAlertViewDelegate>
 {
-   // UISearchBar *searchBar;
+  
 }
 @property (weak, nonatomic) IBOutlet UISearchBar *searchB;
 @property (strong, nonatomic) IBOutlet UITableView *tableView;
 @property (strong, nonatomic) BNRDetailViewController *detailViewController;
-//@property (strong, nonatomic) IBOutlet UITableView *searchB;
-//@property (weak, nonatomic) IBOutlet UISearchBar *searchB;
 @property (nonatomic, weak) id <hello> delegate ;
 @property (strong, nonatomic)  __block NSMutableArray * placemarks;
-
+@property (weak, nonatomic) IBOutlet UIBarButtonItem *doneButton;
 
 @end

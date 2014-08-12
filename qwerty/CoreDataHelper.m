@@ -83,6 +83,7 @@ NSString *storeFilename = @"MapsDB.sqlite";
                                         configuration:nil
                                                   URL:[self storeURL]
                                               options:options error:&error];
+   
     if (!_store) {NSLog(@"Failed to add store. Error: %@", error);abort();}
     else {if (debug==1) {NSLog(@"Successfully added store: %@", _store);}}
 }

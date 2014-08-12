@@ -168,8 +168,15 @@
                             <outlet property="delegate" destination="BZ9-J9-bYx" id="q6M-Be-xsX"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" title="New Cities" id="o4x-2w-rnx"/>
+                    <navigationItem key="navigationItem" title="New Cities" id="o4x-2w-rnx">
+                        <barButtonItem key="rightBarButtonItem" title="Done" id="caW-IP-EdI">
+                            <connections>
+                                <action selector="addCity:" destination="BZ9-J9-bYx" id="LW9-Qk-SmE"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                     <connections>
+                        <outlet property="doneButton" destination="caW-IP-EdI" id="eGg-Gu-Kuc"/>
                         <outlet property="searchB" destination="ebK-wE-Ewu" id="hpb-58-fjq"/>
                         <outlet property="searchDisplayController" destination="KlB-uc-oe6" id="Ri5-78-nU7"/>
                         <outlet property="tableView" destination="Jcy-1Y-ygR" id="ZKs-fV-KK4"/>

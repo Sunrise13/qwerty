@@ -21,7 +21,7 @@
     MKLocalSearchResponse *results;
 }
 
-
+CLPlacemark * general;
 CLPlacemark *thePlacemark;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
@@ -37,26 +37,20 @@ CLPlacemark *thePlacemark;
 {
     [super viewDidLoad];
 	// Do any additional setup after loading the view.
-    //    self.detailViewController.longPressGestureRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(handleLongPressGestures:)];
-    //    self.detailViewController.longPressGestureRecognizer.numberOfTouchesRequired = 1;
-    //    self.detailViewController.longPressGestureRecognizer.allowableMovement = 50.0;
-    //    self.detailViewController.longPressGestureRecognizer.minimumPressDuration = 1.5;
-    //    [self.detailViewController.view addGestureRecognizer:self.detailViewController.longPressGestureRecognizer];
-    //
-    
+    self.detailViewController.longPressGestureRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(handleLongPressGestures:)];
+    self.detailViewController.longPressGestureRecognizer.numberOfTouchesRequired = 1;
+    self.detailViewController.longPressGestureRecognizer.allowableMovement = 50.0;
+    self.detailViewController.longPressGestureRecognizer.minimumPressDuration = 0.8;
+    [self.detailViewController.view addGestureRecognizer:self.detailViewController.longPressGestureRecognizer];
     [self.searchDisplayController setDelegate:self];
     [self.searchB setDelegate:self];
 }
 
 -(void)viewDidDisappear:(BOOL)animated
 {
-    // [self.detailViewController.view removeGestureRecognizer:self.detailViewController.longPressGestureRecognizer];
+    [self.detailViewController.view removeGestureRecognizer:self.detailViewController.longPressGestureRecognizer];
 }
 
--(void)viewDidAppear:(BOOL)animated
-{
-    
-}
 
 - (void)didReceiveMemoryWarning
 {
@@ -66,26 +60,31 @@ CLPlacemark *thePlacemark;
 // Adding the city
 - (IBAction)addCity:(id)sender {
     
+    NSArray *ann = [self.detailViewController.map annotations];
+    [self.detailViewController.map removeAnnotations:ann];
+   
+if(general)
+{
     NSManagedObjectContext * context=((BNRMasterViewController *)self.delegate).db.context;
-  //  pinItem * item=[NSEntityDescription insertNewObjectForEntityForName:@"Pin"inManagedObjectContext:context];
+    pinItem * item=[NSEntityDescription insertNewObjectForEntityForName:@"Pin"inManagedObjectContext:context];
     
-    // item.lat= [NSNumber numberWithDouble:[self.latitudeLabel.text doubleValue]];
-    // item.lon= [NSNumber numberWithDouble:[self.longitudeLabel.text doubleValue]];
-    // item.city= self.search.text;
+    NSNumber * lat = [[NSNumber alloc] initWithDouble:general.location.coordinate.latitude];
+    NSNumber * lon = [[NSNumber alloc] initWithDouble:general.location.coordinate.longitude];
+    item.lat = lat;
+    item.lon = lon;
+    item.city = general.locality;
+    
+    
     [context save:nil];
     [context reset];
+    
     ((BNRMasterViewController *)self.delegate).managedObjs=[((BNRMasterViewController *)self.delegate).db getManagedObjArray];
-    [self.delegate AddViewController:self didAddCity:nil];
-}
-
-
-//Adding the annotaion to the map
-- (void)addAnnotation:(CLPlacemark *)placemark {
-    MKPointAnnotation *point = [[MKPointAnnotation alloc] init];
-    point.coordinate = CLLocationCoordinate2DMake(placemark.location.coordinate.latitude, placemark.location.coordinate.longitude);
-    point.title = [placemark.addressDictionary objectForKey:@"Street"];
-    point.subtitle = [placemark.addressDictionary objectForKey:@"City"];
-    [self.detailViewController.map addAnnotation:point];
+    
+    [self.delegate reloadData];
+  }
+  [self.navigationController popViewControllerAnimated:YES];
+   ann = [self.detailViewController.map annotations];
+   [self.detailViewController.map removeAnnotations:ann];
 }
 
 - (void) alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
@@ -104,7 +103,6 @@ CLPlacemark *thePlacemark;
     if(self)
         if (gestureRecognizer.state != UIGestureRecognizerStateBegan)
             return;
-    NSMutableString * newTitle = [NSMutableString new];
     
     __block MKPointAnnotation *touchPin = [[ MKPointAnnotation alloc] init];
     
@@ -122,32 +120,29 @@ CLPlacemark *thePlacemark;
          {
              CLPlacemark *placemark = [placemarks objectAtIndex:0];
              
+             if(general)
+                 general = placemark;
+             else
+                general = [[CLPlacemark alloc] initWithPlacemark: placemark];
+            
              //getting the city by pressing if there is a city
              if (placemark.locality) {
-                 [newTitle appendString: placemark.locality];
                  
                  
                  NSArray *ann = [self.detailViewController.map annotations];
-                 
-                 //приколи з видаленням останнього піна і створенням його знову
                  [self.detailViewController.map removeAnnotations:ann];
-                 // [self.map addAnnotation:touchPin];
                  
                  touchPin = [[ MKPointAnnotation alloc] init];
                  touchPin.coordinate = location;
-                 touchPin.title = newTitle;
-                 [self.detailViewController.map addAnnotation:touchPin]; //на карті в місці натиснення відображається стандартний червоний пін
+                 touchPin.title = placemark.locality;
+                 [self.detailViewController.map addAnnotation:touchPin];
                  
-                 UIAlertView *addNewPinView = [[UIAlertView alloc] initWithTitle:@"Do you want to add this city to your collection?" message: newTitle delegate:self cancelButtonTitle:@"No" otherButtonTitles:@"Yes", nil];
+                 UIAlertView *addNewPinView = [[UIAlertView alloc] initWithTitle:@"Do you want to add this city to your collection?" message: placemark.locality delegate:self cancelButtonTitle:@"No" otherButtonTitles:@"Yes", nil];
                  
                  [addNewPinView show];
                  
-                 // NSString * lat = [[NSString alloc] initWithFormat:@"%f",location.latitude];
-                 // NSString * lon = [[NSString alloc] initWithFormat:@"%f",location.longitude];
-                 //   self.longitudeLabel.text = lat;
-                 //   self.latitudeLabel.text = lon;
-                 //       self.search.text = placemark.locality;}
-             }
+                }
+             
          }
          else if ((error == nil) && [placemarks count]==0)
          {
@@ -166,7 +161,6 @@ CLPlacemark *thePlacemark;
 
 #pragma mark - searching some cities
 
-//////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////City______Searching/////////////////////////////////////////////////
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -182,7 +176,7 @@ CLPlacemark *thePlacemark;
     MKMapItem *item = results.mapItems[indexPath.row];
     
     cell.textLabel.text = item.name;
-    cell.detailTextLabel.text = item.placemark.addressDictionary[@"Street"];
+   // cell.detailTextLabel.text = item.placemark.addressDictionary[@"Street"];
     
     return cell;
 }
@@ -193,20 +187,24 @@ CLPlacemark *thePlacemark;
 
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    [self.searchDisplayController setActive:NO animated:YES];
+   
+    // [self.searchDisplayController setActive:NO animated:YES];
     
     NSArray *ann = [self.detailViewController.map annotations];
-   
-    if(ann)
     [self.detailViewController.map removeAnnotation:ann.lastObject];
-    
+   
     MKMapItem *item = results.mapItems[indexPath.row];
+    
+    if(general)
+        general = item.placemark;
+    else
+        general = [[CLPlacemark alloc] initWithPlacemark: item.placemark];
+    
     [self.detailViewController.map addAnnotation:item.placemark];
     [self.detailViewController.map selectAnnotation:item.placemark animated:YES];
     [self.detailViewController.map setCenterCoordinate:item.placemark.location.coordinate animated:YES];
     [self.detailViewController.map setUserTrackingMode:MKUserTrackingModeNone];
 }
-
 
 - (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText
 {
@@ -250,6 +248,5 @@ CLPlacemark *thePlacemark;
         
     }
 }
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 @end
