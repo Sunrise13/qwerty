@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 #import <MapKit/MapKit.h>
 #import <CoreLocation/CoreLocation.h>
+#import "DataManager.h"
 //#import "BNRMasterViewController.h"
 
 
@@ -29,6 +30,7 @@
 @property (strong, nonatomic) IBOutlet UITableView *tableView;
 @property (strong, nonatomic) BNRDetailViewController *detailViewController;
 @property (nonatomic, weak) id <hello> delegate ;
+
 @property (strong, nonatomic)  __block NSMutableArray * placemarks;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *doneButton;
 
