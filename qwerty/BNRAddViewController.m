@@ -79,10 +79,10 @@ CLPlacemark *thePlacemark;
     //SEL asd = @selector(addCity:);
     //[self addCity:nil];
     //[self performSelectorInBackground:asd withObject:nil];
-    ((BNRMasterViewController *)self.delegate3).managedObjs = [[DataManager sharedManager] getManagedObjArray];
+    ((BNRMasterViewController *)self.delegate).managedObjs = [[DataManager sharedManager] getManagedObjArray];
     
     [self.delegate reloadData];
-  }
+  
   [self.navigationController popViewControllerAnimated:YES];
    ann = [self.detailViewController.map annotations];
    [self.detailViewController.map removeAnnotations:ann];
