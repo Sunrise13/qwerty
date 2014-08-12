@@ -28,7 +28,7 @@
 
 //Sasha
 @property (nonatomic, strong) UILongPressGestureRecognizer * longPressGestureRecognizer;
-
+@property (strong, nonatomic) UITextField *dist;
 
 - (void) navigation:(NSNotification *)n;
 @end
