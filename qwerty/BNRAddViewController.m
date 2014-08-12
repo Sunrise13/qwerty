@@ -1,23 +1,27 @@
-//
+
 //  BNRAddViewController.m
 //  qwerty
 //
-//  Created by Oleksiy on 8/1/14.
+//  Created by Oleksiy on 8/7/14.
 //  Copyright (c) 2014 Oleksiy. All rights reserved.
 //
-
 #import "BNRAddViewController.h"
 #import "BNRDetailViewController.h"
 #import "pinItem.h"
 
-@interface BNRAddViewController ()
+
+@interface BNRAddViewController () < NSFetchedResultsControllerDelegate, UISearchDisplayDelegate, UISearchBarDelegate>
 
 @end
 
 @implementation BNRAddViewController
+{
+    //Variables which we need to do a search
+    MKLocalSearch *localSearch;
+    MKLocalSearchResponse *results;
+}
 
-
-
+CLPlacemark * general;
 CLPlacemark *thePlacemark;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
@@ -38,7 +42,8 @@ CLPlacemark *thePlacemark;
     self.detailViewController.longPressGestureRecognizer.allowableMovement = 50.0;
     self.detailViewController.longPressGestureRecognizer.minimumPressDuration = 0.8;
     [self.detailViewController.view addGestureRecognizer:self.detailViewController.longPressGestureRecognizer];
-    
+    [self.searchDisplayController setDelegate:self];
+    [self.searchB setDelegate:self];
 }
 
 -(void)viewDidDisappear:(BOOL)animated
@@ -46,10 +51,6 @@ CLPlacemark *thePlacemark;
     [self.detailViewController.view removeGestureRecognizer:self.detailViewController.longPressGestureRecognizer];
 }
 
--(void)viewDidAppear:(BOOL)animated
-{
-    
-}
 
 - (void)didReceiveMemoryWarning
 {
@@ -59,16 +60,19 @@ CLPlacemark *thePlacemark;
 // Adding the city
 - (IBAction)addCity:(id)sender {
     
-    
     NSArray *ann = [self.detailViewController.map annotations];
     [self.detailViewController.map removeAnnotations:ann];
     
     NSManagedObjectContext * context=[[DataManager sharedManager] context];
     pinItem * item=[NSEntityDescription insertNewObjectForEntityForName:@"Pin"inManagedObjectContext:context];
     
-    item.lat= [NSNumber numberWithDouble:[self.latitudeLabel.text doubleValue]];
-    item.lon= [NSNumber numberWithDouble:[self.longitudeLabel.text doubleValue]];
-    item.city= self.search.text;
+    NSNumber * lat = [[NSNumber alloc] initWithDouble:general.location.coordinate.latitude];
+    NSNumber * lon = [[NSNumber alloc] initWithDouble:general.location.coordinate.longitude];
+    item.lat = lat;
+    item.lon = lon;
+    item.city = general.locality;
+    
+    
     [context save:nil];
     [context reset];
     
@@ -79,56 +83,16 @@ CLPlacemark *thePlacemark;
     
  //   ((BNRMasterViewController *)self.delegate3).managedObjs=[((BNRMasterViewController *)self.delegate3).db getManagedObjArray];
     
-    [self.delegate3 AddViewController:self didAddCity:nil];
-}
-
-
-//Searching the city
-- (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar {
-    void(^result)(NSArray *placemarks, NSError *error) = ^(NSArray *placemarks, NSError *error) {
-        if (error) {
-            NSLog(@"%@", error);
-        } else {
-            thePlacemark = [placemarks lastObject];
-            float spanX = 1.00725;
-            float spanY = 1.00725;
-            
-            MKCoordinateRegion region;
-            region.center.latitude = thePlacemark.location.coordinate.latitude;
-            region.center.longitude = thePlacemark.location.coordinate.longitude;
-            NSString *lat = [NSString stringWithFormat:@"%f", region.center.latitude];
-            NSString *lon = [NSString stringWithFormat:@"%f", region.center.longitude];
-            
-            //Setting coordinate label
-            self.latitudeLabel.text = lat;
-            self.longitudeLabel.text = lon;
-            self.search.text = thePlacemark.locality;
-            
-            region.span = MKCoordinateSpanMake(spanX, spanY);
-            [self.detailViewController.map setRegion:region animated:YES];
-            [self addAnnotation:thePlacemark];
-        }
-    };
-    
-    CLGeocoder *geocoder = [[CLGeocoder alloc] init];
-    [geocoder geocodeAddressString:searchBar.text completionHandler:result];
-    [searchBar resignFirstResponder];
-}
-
-
-//Adding the annotaion to the map
-- (void)addAnnotation:(CLPlacemark *)placemark {
-    MKPointAnnotation *point = [[MKPointAnnotation alloc] init];
-    point.coordinate = CLLocationCoordinate2DMake(placemark.location.coordinate.latitude, placemark.location.coordinate.longitude);
-    point.title = [placemark.addressDictionary objectForKey:@"Street"];
-    point.subtitle = [placemark.addressDictionary objectForKey:@"City"];
-    [self.detailViewController.map addAnnotation:point];
+    [self.delegate reloadData];
+  }
+  [self.navigationController popViewControllerAnimated:YES];
+   ann = [self.detailViewController.map annotations];
+   [self.detailViewController.map removeAnnotations:ann];
 }
 
 - (void) alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
 {
     NSString *buttonTitle = [alertView buttonTitleAtIndex:buttonIndex];
-    
     if ([buttonTitle isEqualToString:@"Yes"])
     {
         [self addCity: nil];
@@ -159,6 +123,11 @@ CLPlacemark *thePlacemark;
          {
              CLPlacemark *placemark = [placemarks objectAtIndex:0];
              
+             if(general)
+                 general = placemark;
+             else
+                general = [[CLPlacemark alloc] initWithPlacemark: placemark];
+            
              //getting the city by pressing if there is a city
              if (placemark.locality) {
                  
@@ -175,12 +144,7 @@ CLPlacemark *thePlacemark;
                  
                  [addNewPinView show];
                  
-                 NSString * lat = [[NSString alloc] initWithFormat:@"%f",location.latitude];
-                 NSString * lon = [[NSString alloc] initWithFormat:@"%f",location.longitude];
-                 self.longitudeLabel.text = lon;
-                 self.latitudeLabel.text = lat;
-                 self.search.text = placemark.locality;
-             }
+                }
              
          }
          
@@ -196,9 +160,97 @@ CLPlacemark *thePlacemark;
          
          
      }];
+   
 }
 
+#pragma mark - searching some cities
+
+//////////////////////////////////////City______Searching/////////////////////////////////////////////////
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    static NSString *IDENTIFIER = @"SearchResultsCell";
+    
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:IDENTIFIER];
+   
+    if (cell == nil) {
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:IDENTIFIER];
+    }
+    
+    MKMapItem *item = results.mapItems[indexPath.row];
+    
+    cell.textLabel.text = item.name;
+   // cell.detailTextLabel.text = item.placemark.addressDictionary[@"Street"];
+    
+    return cell;
+}
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    return [results.mapItems count];
+}
+
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+   
+    // [self.searchDisplayController setActive:NO animated:YES];
+    
+    NSArray *ann = [self.detailViewController.map annotations];
+    [self.detailViewController.map removeAnnotation:ann.lastObject];
+   
+    MKMapItem *item = results.mapItems[indexPath.row];
+    
+    if(general)
+        general = item.placemark;
+    else
+        general = [[CLPlacemark alloc] initWithPlacemark: item.placemark];
+    
+    [self.detailViewController.map addAnnotation:item.placemark];
+    [self.detailViewController.map selectAnnotation:item.placemark animated:YES];
+    [self.detailViewController.map setCenterCoordinate:item.placemark.location.coordinate animated:YES];
+    [self.detailViewController.map setUserTrackingMode:MKUserTrackingModeNone];
+}
+
+- (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText
+{
+    if([searchText length] >= 3)
+    {
+        // Cancel any previous searches.
+        [localSearch cancel];
+        
+        // Perform a new search.
+        MKLocalSearchRequest *request = [[MKLocalSearchRequest alloc] init];
+        request.naturalLanguageQuery = searchBar.text;
+        request.region = self.detailViewController.map.region;
+        
+        [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
+        localSearch = [[MKLocalSearch alloc] initWithRequest:request];
+        
+        [localSearch startWithCompletionHandler:^(MKLocalSearchResponse *response, NSError *error){
+            
+            [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+            
+            if (error != nil) {
+                [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Map Error",nil)
+                                            message:[error localizedDescription]
+                                           delegate:nil
+                                  cancelButtonTitle:NSLocalizedString(@"OK",nil) otherButtonTitles:nil] show];
+                return;
+            }
+            
+            if ([response.mapItems count] == 0) {
+                [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"No Results",nil)
+                                            message:nil
+                                           delegate:nil
+                                  cancelButtonTitle:NSLocalizedString(@"OK",nil) otherButtonTitles:nil] show];
+                return;
+            }
+            
+            results = response;
+            
+            [self.searchDisplayController.searchResultsTableView reloadData];
+        }];
+        
+    }
+}
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 @end
-
-
-

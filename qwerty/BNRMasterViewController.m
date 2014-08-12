@@ -13,9 +13,8 @@
 
 #import "DataManager.h"
 
-@interface BNRMasterViewController () <BNRAddViewControllerDelegate>
+@interface BNRMasterViewController ()
 {
-    
 }
 
 @end
@@ -104,7 +103,7 @@
     
     if ([segue.identifier isEqualToString:@"AddCity"]) {
         BNRAddViewController *PController = segue.destinationViewController;
-        PController.delegate3 = self;
+        PController.delegate = self;
         PController.detailViewController = self.detailViewController;
     }
 }
@@ -123,7 +122,7 @@
         
 }
 
-- (void)AddViewController:(BNRAddViewController *)controller didAddCity:(NSDictionary *)city
+- (void)reloadData
 {
         [self.tableView reloadData];
 }

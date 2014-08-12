@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		1D883BA4199A1F7400B493FC /* DataManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 1D883BA3199A1F7400B493FC /* DataManager.m */; };
 		4D02442B1987C49700763295 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4D02442A1987C49700763295 /* MapKit.framework */; };
-		4D0244301987CC9600763295 /* PropertyList.plist in Resources */ = {isa = PBXBuildFile; fileRef = 4D02442F1987CC9600763295 /* PropertyList.plist */; };
 		4D09F201198BD05B00708DF8 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4D09F200198BD05B00708DF8 /* CoreLocation.framework */; };
 		4D461A5F1987BD5900E08BDA /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4D461A5E1987BD5900E08BDA /* Foundation.framework */; };
 		4D461A611987BD5900E08BDA /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4D461A601987BD5900E08BDA /* CoreGraphics.framework */; };
@@ -48,7 +47,6 @@
 		1D883BA2199A1F7400B493FC /* DataManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DataManager.h; sourceTree = "<group>"; };
 		1D883BA3199A1F7400B493FC /* DataManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DataManager.m; sourceTree = "<group>"; };
 		4D02442A1987C49700763295 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
-		4D02442F1987CC9600763295 /* PropertyList.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = PropertyList.plist; sourceTree = "<group>"; };
 		4D09F200198BD05B00708DF8 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
 		4D461A5B1987BD5900E08BDA /* qwerty.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = qwerty.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4D461A5E1987BD5900E08BDA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -109,6 +107,60 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		4D262EB919939851002714E8 /* AddViewController */ = {
+			isa = PBXGroup;
+			children = (
+				4D757E2619939BC90030819A /* BNRAddViewController.h */,
+				4D757E2719939BC90030819A /* BNRAddViewController.m */,
+			);
+			name = AddViewController;
+			sourceTree = "<group>";
+		};
+		4D2B0BA91999009300F0F8C9 /* MasterViewController */ = {
+			isa = PBXGroup;
+			children = (
+				4D461A761987BD5900E08BDA /* BNRMasterViewController.h */,
+				4D461A771987BD5900E08BDA /* BNRMasterViewController.m */,
+			);
+			name = MasterViewController;
+			sourceTree = "<group>";
+		};
+		4D2B0BAA199900AF00F0F8C9 /* DetailViewController */ = {
+			isa = PBXGroup;
+			children = (
+				4D461A7A1987BD5900E08BDA /* BNRDetailViewController.m */,
+				4D461A791987BD5900E08BDA /* BNRDetailViewController.h */,
+			);
+			name = DetailViewController;
+			sourceTree = "<group>";
+		};
+		4D2B0BAB199900C600F0F8C9 /* MapTileOverlay */ = {
+			isa = PBXGroup;
+			children = (
+				D2BC68D919951DF000173EFD /* MapTileOverlay.m */,
+				D2BC68D819951DF000173EFD /* MapTileOverlay.h */,
+			);
+			name = MapTileOverlay;
+			sourceTree = "<group>";
+		};
+		4D2B0BAC199900DB00F0F8C9 /* AppDelegate */ = {
+			isa = PBXGroup;
+			children = (
+				4D461A6D1987BD5900E08BDA /* BNRAppDelegate.h */,
+				4D461A6E1987BD5900E08BDA /* BNRAppDelegate.m */,
+			);
+			name = AppDelegate;
+			sourceTree = "<group>";
+		};
+		4D2B0BAD199900EE00F0F8C9 /* Storyboard */ = {
+			isa = PBXGroup;
+			children = (
+				D2E02DFF19891230000A634E /* Main_iPad.storyboard */,
+				4D461A701987BD5900E08BDA /* Main_iPhone.storyboard */,
+			);
+			name = Storyboard;
+			sourceTree = "<group>";
+		};
 		4D461A521987BD5900E08BDA = {
 			isa = PBXGroup;
 			children = (
@@ -146,21 +198,14 @@
 			isa = PBXGroup;
 			children = (
 				D247EDCA199264E9008A9140 /* CoreData */,
-				4D461A6D1987BD5900E08BDA /* BNRAppDelegate.h */,
-				4D461A6E1987BD5900E08BDA /* BNRAppDelegate.m */,
-				D2E02DFF19891230000A634E /* Main_iPad.storyboard */,
-				4D8B7094198B8E450010D5B1 /* BNRAddViewController.h */,
-				4D8B7095198B8E450010D5B1 /* BNRAddViewController.m */,
-				4D461A701987BD5900E08BDA /* Main_iPhone.storyboard */,
-				4D461A761987BD5900E08BDA /* BNRMasterViewController.h */,
-				4D461A771987BD5900E08BDA /* BNRMasterViewController.m */,
-				4D461A791987BD5900E08BDA /* BNRDetailViewController.h */,
-				4D461A7A1987BD5900E08BDA /* BNRDetailViewController.m */,
-				D2BC68D819951DF000173EFD /* MapTileOverlay.h */,
-				D2BC68D919951DF000173EFD /* MapTileOverlay.m */,
-				4D461A7C1987BD5900E08BDA /* Images.xcassets */,
+				4D2B0BAC199900DB00F0F8C9 /* AppDelegate */,
+				4D262EB919939851002714E8 /* AddViewController */,
+				4D2B0BA91999009300F0F8C9 /* MasterViewController */,
+				4D2B0BAA199900AF00F0F8C9 /* DetailViewController */,
+				4D2B0BAB199900C600F0F8C9 /* MapTileOverlay */,
+				4D2B0BAD199900EE00F0F8C9 /* Storyboard */,
 				4D461A651987BD5900E08BDA /* Supporting Files */,
-				4D02442F1987CC9600763295 /* PropertyList.plist */,
+				4D461A7C1987BD5900E08BDA /* Images.xcassets */,
 			);
 			path = qwerty;
 			sourceTree = "<group>";
@@ -286,7 +331,6 @@
 				D2E02E0119891230000A634E /* Main_iPad.storyboard in Resources */,
 				4D461A7D1987BD5900E08BDA /* Images.xcassets in Resources */,
 				4D461A721987BD5900E08BDA /* Main_iPhone.storyboard in Resources */,
-				4D0244301987CC9600763295 /* PropertyList.plist in Resources */,
 				4D461A691987BD5900E08BDA /* InfoPlist.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -309,8 +353,8 @@
 				1D883BA4199A1F7400B493FC /* DataManager.m in Sources */,
 				4D461A7B1987BD5900E08BDA /* BNRDetailViewController.m in Sources */,
 				D247EDD919926C32008A9140 /* pinItem.m in Sources */,
+				4D757E2819939BC90030819A /* BNRAddViewController.m in Sources */,
 				D247EDD0199268CE008A9140 /* mapModel.xcdatamodeld in Sources */,
-				4D8B7096198B8E450010D5B1 /* BNRAddViewController.m in Sources */,
 				4D461A6B1987BD5900E08BDA /* main.m in Sources */,
 				4D461A781987BD5900E08BDA /* BNRMasterViewController.m in Sources */,
 				D2BC68DA19951DF000173EFD /* MapTileOverlay.m in Sources */,
