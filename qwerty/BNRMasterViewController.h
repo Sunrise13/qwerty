@@ -8,10 +8,9 @@
 
 #import <UIKit/UIKit.h>
 #import "BNRAddViewController.h"
-#import "CoreDataHelper.h"
+#import "DataManager.h"
 
-
-
+@class DataManager;
 @class BNRAddViewController;
 @class BNRDetailViewController;
 
@@ -20,7 +19,7 @@
 @property (weak, nonatomic) BNRDetailViewController *detailViewController;
 @property (weak, nonatomic) IBOutlet UITableView *table;
 @property (nonatomic, strong) NSMutableArray *managedObjs;
-@property (nonatomic, strong) CoreDataHelper *db;
+//@property (nonatomic, strong) DataManager *db;
 
 @end
 

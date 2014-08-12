@@ -18,10 +18,10 @@
     if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
         UISplitViewController *splitViewController = (UISplitViewController *)self.window.rootViewController;
         UINavigationController *navigationController = [splitViewController.viewControllers lastObject];
-        UINavigationController *navigationController1 = [splitViewController.viewControllers firstObject];
-        BNRMasterViewController *master=[navigationController1 viewControllers][0];
-        self.db=[CoreDataHelper new];
-        master.db=self.db;
+        //UINavigationController *navigationController1 = [splitViewController.viewControllers firstObject];
+        //BNRMasterViewController *master=[navigationController1 viewControllers][0];
+        [DataManager new];
+        //master.db=self.db;
         splitViewController.delegate = (id)navigationController.topViewController;
         
     }
@@ -36,7 +36,7 @@
 
 - (void)applicationDidEnterBackground:(UIApplication *)application
 {
-    [self.db saveContext];
+    [[DataManager sharedManager] saveContext];
 
 }
 
@@ -52,7 +52,7 @@
 
 - (void)applicationWillTerminate:(UIApplication *)application
 {
-    [self.db saveContext];
+    [[DataManager sharedManager] saveContext];
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
 }
 

@@ -1,22 +1,24 @@
 //
-//  CoreDataHelper.h
-//  Grocery Dude
+//  DataManager.h
+//  qwerty
 //
-//  Created by Ostap R on 05.08.14.
-//  Copyright (c) 2014 Ostap Romanko. All rights reserved.
+//  Created by Sasha Gypsy on 12.08.14.
+//  Copyright (c) 2014 Oleksiy. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
 #import <CoreData/CoreData.h>
 
-@interface CoreDataHelper : NSObject
+@interface DataManager : NSObject
 
+@property (nonatomic, retain) NSString *someProperty;
 @property (nonatomic, readonly) NSManagedObjectContext *context;
 @property (nonatomic, readonly) NSManagedObjectModel *model;
 @property (nonatomic, readonly) NSPersistentStoreCoordinator *coordinator;
 @property (nonatomic, readonly) NSPersistentStore *store;
-- (void)setupCoreData;
-- (void)saveContext;
-- (void)populateDB:(NSArray *)arr;
-- (NSMutableArray *)getManagedObjArray;
+
++ (id) sharedManager;
+- (void) setupCoreData;
+- (void) saveContext;
+- (NSMutableArray *) getManagedObjArray;
 @end

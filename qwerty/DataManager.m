@@ -1,17 +1,63 @@
 //
-//  CoreDataHelper.m
-//  Grocery Dude
+//  DataManager.m
+//  qwerty
 //
-//  Created by Ostap R on 05.08.14.
-//  Copyright (c) 2014 Ostap Romanko. All rights reserved.
+//  Created by Sasha Gypsy on 12.08.14.
+//  Copyright (c) 2014 Oleksiy. All rights reserved.
 //
 
-#import "CoreDataHelper.h"
-#import "pinItem.h"
+#import "DataManager.h"
 
-@implementation CoreDataHelper
+@implementation DataManager
++ (id)sharedManager {
+    static DataManager *dataManager = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        dataManager = [[self alloc] init];
+    });
+    return dataManager;
+}
 
 #define debug 1
+#pragma mark - SETUP CoreDataManager
+- (id)init {
+    if (debug==1) {
+        NSLog(@"Running %@ '%@'", self.class, NSStringFromSelector(_cmd));
+    }
+    self = [super init];
+    if (!self) {return nil;}
+    _model = [NSManagedObjectModel mergedModelFromBundles:nil];
+    _coordinator = [[NSPersistentStoreCoordinator alloc]
+                    initWithManagedObjectModel:_model];
+    _context = [[NSManagedObjectContext alloc]
+                initWithConcurrencyType:NSMainQueueConcurrencyType];
+    [_context setPersistentStoreCoordinator:_coordinator];
+    return self;
+}
+
+- (void)setupCoreData {
+    if (debug==1) {
+        NSLog(@"Running %@ '%@'", self.class, NSStringFromSelector(_cmd));
+    }
+    [self loadStore];
+}
+
+- (void)loadStore {
+    if (debug==1) {
+        NSLog(@"Running %@ '%@'", self.class, NSStringFromSelector(_cmd));
+    }
+    if (_store) {return;} // Don't load store if it's already loaded
+    NSError *error = nil;
+    NSDictionary *options =
+    @{NSSQLitePragmasOption: @{@"journal_mode": @"DELETE"}};
+    _store = [_coordinator addPersistentStoreWithType:NSSQLiteStoreType
+                                        configuration:nil
+                                                  URL:[self storeURL]
+                                              options:options error:&error];
+    if (!_store) {NSLog(@"Failed to add store. Error: %@", error);abort();}
+    else {if (debug==1) {NSLog(@"Successfully added store: %@", _store);}}
+}
+
 #pragma mark - FILES
 NSString *storeFilename = @"MapsDB.sqlite";
 
@@ -23,7 +69,6 @@ NSString *storeFilename = @"MapsDB.sqlite";
     return [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask,YES) lastObject];
 }
 
-
 - (NSURL *)applicationStoresDirectory {
     if (debug==1)
     {
@@ -31,7 +76,7 @@ NSString *storeFilename = @"MapsDB.sqlite";
     }
     NSURL *storesDirectory =
     [[NSURL fileURLWithPath:[self applicationDocumentsDirectory]]
-    URLByAppendingPathComponent:@"Stores"];
+     URLByAppendingPathComponent:@"Stores"];
     NSFileManager *fileManager = [NSFileManager defaultManager];
     if (![fileManager fileExistsAtPath:[storesDirectory path]]) {
         NSError *error = nil;
@@ -55,45 +100,6 @@ NSString *storeFilename = @"MapsDB.sqlite";
             URLByAppendingPathComponent:storeFilename];
 }
 
-#pragma mark - SETUP
-- (id)init {
-    if (debug==1) {
-        NSLog(@"Running %@ '%@'", self.class, NSStringFromSelector(_cmd));
-    }
-    self = [super init];
-    if (!self) {return nil;}
-    _model = [NSManagedObjectModel mergedModelFromBundles:nil];
-    _coordinator = [[NSPersistentStoreCoordinator alloc]
-                    initWithManagedObjectModel:_model];
-    _context = [[NSManagedObjectContext alloc]
-                initWithConcurrencyType:NSMainQueueConcurrencyType];
-    [_context setPersistentStoreCoordinator:_coordinator];
-    return self;
-}
-
-- (void)loadStore {
-    if (debug==1) {
-        NSLog(@"Running %@ '%@'", self.class, NSStringFromSelector(_cmd));
-    }
-    if (_store) {return;} // Don't load store if it's already loaded
-    NSError *error = nil;
-    NSDictionary *options =
-    @{NSSQLitePragmasOption: @{@"journal_mode": @"DELETE"}};
-    _store = [_coordinator addPersistentStoreWithType:NSSQLiteStoreType
-                                        configuration:nil
-                                                  URL:[self storeURL]
-                                              options:options error:&error];
-    if (!_store) {NSLog(@"Failed to add store. Error: %@", error);abort();}
-    else {if (debug==1) {NSLog(@"Successfully added store: %@", _store);}}
-}
-
-- (void)setupCoreData {
-    if (debug==1) {
-        NSLog(@"Running %@ '%@'", self.class, NSStringFromSelector(_cmd));
-    }
-    [self loadStore];
-}
-
 #pragma mark - SAVING
 - (void)saveContext {
     if (debug==1) {
@@ -111,23 +117,7 @@ NSString *storeFilename = @"MapsDB.sqlite";
     }
 }
 
-
-
-- (void)populateDB:(NSArray *)arr
-{
-    for(NSDictionary *pin in arr)
-    {
-        pinItem *newItem =[NSEntityDescription insertNewObjectForEntityForName:@"Pin"inManagedObjectContext:self.context];
-        newItem.city =pin[@"city"];
-        newItem.lat=pin[@"lat"];
-        newItem.lon=pin[@"long"];
-        NSLog(@"Inserted New Managed Object for '%@'", newItem.city);
-    }
-    
-    
-
-}
-
+#pragma mark - GETING DATA
 - (NSMutableArray *)getManagedObjArray
 {
     NSFetchRequest *request =
@@ -139,8 +129,5 @@ NSString *storeFilename = @"MapsDB.sqlite";
     NSMutableArray * arr =[[NSMutableArray alloc]initWithArray:[self.context executeFetchRequest:request error:nil]];
     return arr;
 }
-
-
-
 
 @end

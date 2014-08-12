@@ -63,7 +63,7 @@ CLPlacemark *thePlacemark;
     NSArray *ann = [self.detailViewController.map annotations];
     [self.detailViewController.map removeAnnotations:ann];
     
-    NSManagedObjectContext * context=((BNRMasterViewController *)self.delegate3).db.context;
+    NSManagedObjectContext * context=[[DataManager sharedManager] context];
     pinItem * item=[NSEntityDescription insertNewObjectForEntityForName:@"Pin"inManagedObjectContext:context];
     
     item.lat= [NSNumber numberWithDouble:[self.latitudeLabel.text doubleValue]];
@@ -75,8 +75,9 @@ CLPlacemark *thePlacemark;
     //SEL asd = @selector(addCity:);
     //[self addCity:nil];
     //[self performSelectorInBackground:asd withObject:nil];
+    ((BNRMasterViewController *)self.delegate3).managedObjs = [[DataManager sharedManager] getManagedObjArray];
     
-    ((BNRMasterViewController *)self.delegate3).managedObjs=[((BNRMasterViewController *)self.delegate3).db getManagedObjArray];
+ //   ((BNRMasterViewController *)self.delegate3).managedObjs=[((BNRMasterViewController *)self.delegate3).db getManagedObjArray];
     
     [self.delegate3 AddViewController:self didAddCity:nil];
 }

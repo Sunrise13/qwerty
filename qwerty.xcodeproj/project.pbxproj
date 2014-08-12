@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1D883BA4199A1F7400B493FC /* DataManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 1D883BA3199A1F7400B493FC /* DataManager.m */; };
 		4D02442B1987C49700763295 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4D02442A1987C49700763295 /* MapKit.framework */; };
 		4D0244301987CC9600763295 /* PropertyList.plist in Resources */ = {isa = PBXBuildFile; fileRef = 4D02442F1987CC9600763295 /* PropertyList.plist */; };
 		4D09F201198BD05B00708DF8 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4D09F200198BD05B00708DF8 /* CoreLocation.framework */; };
@@ -26,7 +27,6 @@
 		4D461A8E1987BD5A00E08BDA /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 4D461A8C1987BD5A00E08BDA /* InfoPlist.strings */; };
 		4D461A901987BD5A00E08BDA /* qwertyTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D461A8F1987BD5A00E08BDA /* qwertyTests.m */; };
 		4D8B7096198B8E450010D5B1 /* BNRAddViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D8B7095198B8E450010D5B1 /* BNRAddViewController.m */; };
-		D247EDCD19926501008A9140 /* CoreDataHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = D247EDCC19926501008A9140 /* CoreDataHelper.m */; };
 		D247EDD0199268CE008A9140 /* mapModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = D247EDCE199268CE008A9140 /* mapModel.xcdatamodeld */; };
 		D247EDD21992698A008A9140 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D247EDD11992698A008A9140 /* CoreData.framework */; };
 		D247EDD919926C32008A9140 /* pinItem.m in Sources */ = {isa = PBXBuildFile; fileRef = D247EDD819926C32008A9140 /* pinItem.m */; };
@@ -45,6 +45,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		1D883BA2199A1F7400B493FC /* DataManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DataManager.h; sourceTree = "<group>"; };
+		1D883BA3199A1F7400B493FC /* DataManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DataManager.m; sourceTree = "<group>"; };
 		4D02442A1987C49700763295 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
 		4D02442F1987CC9600763295 /* PropertyList.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = PropertyList.plist; sourceTree = "<group>"; };
 		4D09F200198BD05B00708DF8 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
@@ -71,8 +73,6 @@
 		4D461A8F1987BD5A00E08BDA /* qwertyTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = qwertyTests.m; sourceTree = "<group>"; };
 		4D8B7094198B8E450010D5B1 /* BNRAddViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BNRAddViewController.h; sourceTree = "<group>"; };
 		4D8B7095198B8E450010D5B1 /* BNRAddViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BNRAddViewController.m; sourceTree = "<group>"; };
-		D247EDCB19926501008A9140 /* CoreDataHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CoreDataHelper.h; sourceTree = "<group>"; };
-		D247EDCC19926501008A9140 /* CoreDataHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CoreDataHelper.m; sourceTree = "<group>"; };
 		D247EDCF199268CE008A9140 /* mapModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = mapModel.xcdatamodel; sourceTree = "<group>"; };
 		D247EDD11992698A008A9140 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
 		D247EDD719926C32008A9140 /* pinItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = pinItem.h; path = ../pinItem.h; sourceTree = "<group>"; };
@@ -197,10 +197,10 @@
 		D247EDCA199264E9008A9140 /* CoreData */ = {
 			isa = PBXGroup;
 			children = (
+				1D883BA2199A1F7400B493FC /* DataManager.h */,
+				1D883BA3199A1F7400B493FC /* DataManager.m */,
 				D247EDD719926C32008A9140 /* pinItem.h */,
 				D247EDD819926C32008A9140 /* pinItem.m */,
-				D247EDCB19926501008A9140 /* CoreDataHelper.h */,
-				D247EDCC19926501008A9140 /* CoreDataHelper.m */,
 				D247EDCE199268CE008A9140 /* mapModel.xcdatamodeld */,
 			);
 			name = CoreData;
@@ -306,7 +306,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D247EDCD19926501008A9140 /* CoreDataHelper.m in Sources */,
+				1D883BA4199A1F7400B493FC /* DataManager.m in Sources */,
 				4D461A7B1987BD5900E08BDA /* BNRDetailViewController.m in Sources */,
 				D247EDD919926C32008A9140 /* pinItem.m in Sources */,
 				D247EDD0199268CE008A9140 /* mapModel.xcdatamodeld in Sources */,

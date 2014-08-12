@@ -8,9 +8,10 @@
 
 #import "BNRMasterViewController.h"
 #import "BNRDetailViewController.h"
+#import "BNRAddViewController.h"
 #import "pinItem.h"
 
-#import "BNRAddViewController.h"
+#import "DataManager.h"
 
 @interface BNRMasterViewController () <BNRAddViewControllerDelegate>
 {
@@ -36,10 +37,10 @@
     [super viewDidLoad];
     self.detailViewController = (BNRDetailViewController *)[[self.splitViewController.viewControllers lastObject] topViewController];
     
-    if(self.db)
+    if([DataManager sharedManager])
     {
-        [self.db setupCoreData];
-        self.managedObjs=[self.db getManagedObjArray];
+        [[DataManager sharedManager] setupCoreData];
+        self.managedObjs=[[DataManager sharedManager] getManagedObjArray];
     }
 }
 
@@ -149,7 +150,7 @@
 {
     if (editingStyle == UITableViewCellEditingStyleDelete)
     {
-        [self.db.context deleteObject:self.managedObjs[indexPath.row]];
+        [[[DataManager sharedManager] context] deleteObject:self.managedObjs[indexPath.row]];
         [_managedObjs removeObjectAtIndex:indexPath.row];
         
         [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationLeft];
