@@ -232,9 +232,9 @@ static Route route;
     NSLog(@"In calculateAndShowRoutes");
     NSArray * pathes=[self.master.table indexPathsForSelectedRows];
     
-    __block double routeDistance = 0.0;
-    __block double centerX = ((CLPlacemark *)(self.placemarks[[NSNumber numberWithInt:0]][0])).location.coordinate.latitude;
-    __block double centerY = ((CLPlacemark *)(self.placemarks[[NSNumber numberWithInt:0]][0])).location.coordinate.longitude;
+    __block CGFloat routeDistance = 0.0;
+    __block CGFloat centerX = ((CLPlacemark *)(self.placemarks[[NSNumber numberWithInt:0]][0])).location.coordinate.latitude;
+    __block CGFloat centerY = ((CLPlacemark *)(self.placemarks[[NSNumber numberWithInt:0]][0])).location.coordinate.longitude;
     
     for(int i=0; i<=[pathes count]-2; i++)
     {
@@ -265,7 +265,7 @@ static Route route;
                 
                 if (i==[pathes count]-2)
                 {
-                   [renderDistance appendString:[NSString stringWithFormat:@"%.2f", routeDistance]];
+                    [renderDistance appendString:[NSString stringWithFormat:@"%.2f", routeDistance*0.001]];
                     self.dist.text = renderDistance;
                 
                     [self.map addSubview:self.dist];
@@ -274,22 +274,22 @@ static Route route;
                 
                     CLLocationCoordinate2D center = CLLocationCoordinate2DMake(centerX,  centerY);
                     for(int j=1; j<[pathes count]; j++)
-                  {
-                        double curX = ABS(((CLPlacemark *)(self.placemarks[[NSNumber numberWithInt:j]][0])).location.coordinate.latitude - centerX);
-                        double curY = ABS(((CLPlacemark *)(self.placemarks[[NSNumber numberWithInt:j]][0])).location.coordinate.longitude - centerY);
+                    {
+                        CGFloat curX = ABS(((CLPlacemark *)(self.placemarks[[NSNumber numberWithInt:j]][0])).location.coordinate.latitude - centerX);
+                        CGFloat curY = ABS(((CLPlacemark *)(self.placemarks[[NSNumber numberWithInt:j]][0])).location.coordinate.longitude - centerY);
                         if (curX>maxX)
                            maxX = curX;
                         if (curY>maxY)
-                           maxY = curY;
-                
-                   }
-                    double scalingFactor = ABS( (cos(2 * M_PI * centerX / 360.0) ));
+                            maxY = curY;
+                        
+                    }
+                    CGFloat scalingFactor = ABS((cos(2 * M_PI * centerX / 360.0) ));
                     MKCoordinateSpan span;
-                    span.latitudeDelta = maxX/3.0;
-                   span.longitudeDelta = maxY/( scalingFactor*3.0);
-                   MKCoordinateRegion reg = MKCoordinateRegionMake(center, span);
-               [self.map setRegion:reg animated:YES];
-            }
+                    span.latitudeDelta = maxX;
+                    span.longitudeDelta = maxY;
+                    MKCoordinateRegion reg = MKCoordinateRegionMake(center, span);
+                    [self.map setRegion:reg animated:YES];
+                }
                 
                 
             }
