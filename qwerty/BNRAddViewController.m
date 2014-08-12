@@ -81,8 +81,6 @@ CLPlacemark *thePlacemark;
     //[self performSelectorInBackground:asd withObject:nil];
     ((BNRMasterViewController *)self.delegate3).managedObjs = [[DataManager sharedManager] getManagedObjArray];
     
- //   ((BNRMasterViewController *)self.delegate3).managedObjs=[((BNRMasterViewController *)self.delegate3).db getManagedObjArray];
-    
     [self.delegate reloadData];
   }
   [self.navigationController popViewControllerAnimated:YES];
