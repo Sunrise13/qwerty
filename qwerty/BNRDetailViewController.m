@@ -233,7 +233,10 @@ static Route route;
     __block double routeDistance = 0.0;
     __block double centerX = ((CLPlacemark *)(self.placemarks[[NSNumber numberWithInt:0]][0])).location.coordinate.latitude;
     __block double centerY = ((CLPlacemark *)(self.placemarks[[NSNumber numberWithInt:0]][0])).location.coordinate.longitude;
-    
+    __block double minX;
+    __block double maxX;
+    __block double minY;
+    __block double maxY;
     for(int i=0; i<=[pathes count]-2; i++)
     {
         
@@ -256,8 +259,17 @@ static Route route;
                 
                 centerY += ((CLPlacemark *)(self.placemarks[[NSNumber numberWithInt:i+1]][0])).location.coordinate.longitude;
                 
+                
+                double minX;
+                double maxX;
+                double minY;
+                double maxY;
+                
                 if (i==[pathes count]-2)
                 {
+                    centerX += ((CLPlacemark *)(self.placemarks[[NSNumber numberWithInt:i+2]][0])).location.coordinate.latitude;
+                    
+                    centerY += ((CLPlacemark *)(self.placemarks[[NSNumber numberWithInt:i+2]][0])).location.coordinate.longitude;
                     [renderDistance appendString:[NSString stringWithFormat:@"%.2f", routeDistance]];
                     self.dist.text = renderDistance;
                     
@@ -266,8 +278,12 @@ static Route route;
                     centerY /= [pathes count];
                     
                     CLLocationCoordinate2D center = CLLocationCoordinate2DMake(centerX,  centerY);
-//Sasha need to change it here  -- define span
-                    MKCoordinateSpan span = MKCoordinateSpanMake(10.0, 10.0);
+
+                    double scalingFactor = ABS( (cos(2 * M_PI * centerX / 360.0) ));
+                    //MKCoordinateSpan span;
+                    //span.latitudeDelta = miles/69.0;
+                    //span.longitudeDelta = miles/(scalingFactor * 69.0);
+                    MKCoordinateSpan span= MKCoordinateSpanMake(10.0, 10.0);
                     MKCoordinateRegion reg = MKCoordinateRegionMake(center, span);
                     [self.map setRegion:reg animated:YES];
                 }
