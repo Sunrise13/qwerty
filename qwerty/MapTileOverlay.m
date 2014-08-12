@@ -54,19 +54,6 @@
         [con initWithRequest:req delegate:self];
        
 
-        
-        
-        
-//        NSData *data=[[NSData alloc]initWithContentsOfURL:url];
-//        
-//        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
-//            // Generate the file path
-//              [data writeToFile:pathToTile atomically:YES];
-//            // Save it into file system
-//        });
-        
-      
-       // result(data, nil);
     }
 
 
