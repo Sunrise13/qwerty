@@ -8,7 +8,10 @@
 #import <MapKit/MapKit.h>
 #import <UIKit/UIKit.h>
 
-@interface MapTileOverlay : MKTileOverlay
+@interface MapTileOverlay : MKTileOverlay <NSURLConnectionDelegate>
+
+@property(nonatomic) NSMutableSet *setOfConnections;
+@property(nonatomic) NSMutableDictionary *dicOfData;
 
 -(MKTileOverlayPath)genLatAndLonFromXY:(MKTileOverlayPath)xy;
 

@@ -29,7 +29,8 @@
 		D247EDD0199268CE008A9140 /* mapModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = D247EDCE199268CE008A9140 /* mapModel.xcdatamodeld */; };
 		D247EDD21992698A008A9140 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D247EDD11992698A008A9140 /* CoreData.framework */; };
 		D247EDD919926C32008A9140 /* pinItem.m in Sources */ = {isa = PBXBuildFile; fileRef = D247EDD819926C32008A9140 /* pinItem.m */; };
-		D2BC68DA19951DF000173EFD /* MapTileOverlay.m in Sources */ = {isa = PBXBuildFile; fileRef = D2BC68D919951DF000173EFD /* MapTileOverlay.m */; };
+		D2BC68E8199A43F100173EFD /* BNRAddViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D2BC68E7199A43F100173EFD /* BNRAddViewController.m */; };
+		D2BC68EB199A4D4300173EFD /* MapTileOverlay.m in Sources */ = {isa = PBXBuildFile; fileRef = D2BC68E9199A4D4300173EFD /* MapTileOverlay.m */; };
 		D2E02E0119891230000A634E /* Main_iPad.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D2E02DFF19891230000A634E /* Main_iPad.storyboard */; };
 /* End PBXBuildFile section */
 
@@ -75,8 +76,10 @@
 		D247EDD11992698A008A9140 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
 		D247EDD719926C32008A9140 /* pinItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = pinItem.h; path = ../pinItem.h; sourceTree = "<group>"; };
 		D247EDD819926C32008A9140 /* pinItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = pinItem.m; path = ../pinItem.m; sourceTree = "<group>"; };
-		D2BC68D819951DF000173EFD /* MapTileOverlay.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MapTileOverlay.h; sourceTree = "<group>"; };
-		D2BC68D919951DF000173EFD /* MapTileOverlay.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MapTileOverlay.m; sourceTree = "<group>"; };
+		D2BC68E6199A43F100173EFD /* BNRAddViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BNRAddViewController.h; sourceTree = "<group>"; };
+		D2BC68E7199A43F100173EFD /* BNRAddViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BNRAddViewController.m; sourceTree = "<group>"; };
+		D2BC68E9199A4D4300173EFD /* MapTileOverlay.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MapTileOverlay.m; sourceTree = "<group>"; };
+		D2BC68EA199A4D4300173EFD /* MapTileOverlay.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MapTileOverlay.h; sourceTree = "<group>"; };
 		D2E02E0019891230000A634E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main_iPad.storyboard; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -137,8 +140,8 @@
 		4D2B0BAB199900C600F0F8C9 /* MapTileOverlay */ = {
 			isa = PBXGroup;
 			children = (
-				D2BC68D919951DF000173EFD /* MapTileOverlay.m */,
-				D2BC68D819951DF000173EFD /* MapTileOverlay.h */,
+				D2BC68E9199A4D4300173EFD /* MapTileOverlay.m */,
+				D2BC68EA199A4D4300173EFD /* MapTileOverlay.h */,
 			);
 			name = MapTileOverlay;
 			sourceTree = "<group>";
@@ -357,7 +360,7 @@
 				D247EDD0199268CE008A9140 /* mapModel.xcdatamodeld in Sources */,
 				4D461A6B1987BD5900E08BDA /* main.m in Sources */,
 				4D461A781987BD5900E08BDA /* BNRMasterViewController.m in Sources */,
-				D2BC68DA19951DF000173EFD /* MapTileOverlay.m in Sources */,
+				D2BC68EB199A4D4300173EFD /* MapTileOverlay.m in Sources */,
 				4D461A6F1987BD5900E08BDA /* BNRAppDelegate.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

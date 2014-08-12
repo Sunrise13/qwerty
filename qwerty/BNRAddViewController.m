@@ -84,8 +84,9 @@ CLPlacemark *thePlacemark;
     [self.delegate reloadData];
   
   [self.navigationController popViewControllerAnimated:YES];
-   ann = [self.detailViewController.map annotations];
-   [self.detailViewController.map removeAnnotations:ann];
+  // ann = [self.detailViewController.map annotations];
+
+//[self.detailViewController.map removeAnnotations:ann];
 }
 
 - (void) alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
