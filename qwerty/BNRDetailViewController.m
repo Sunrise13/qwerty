@@ -30,8 +30,9 @@ static Route route;
 @end
 
 @implementation BNRDetailViewController
-
-
+//Begin V.S Code
+@synthesize mapTypeControl;
+//End V.S. Code
 #pragma mark - Managing the detail item
 
 - (void)setDetailItem:(id)newDetailItem
@@ -470,5 +471,53 @@ static Route route;
     
     
 }
+//begin V.S. Code
+- (IBAction)getMapScreenShot {
+    @try{
+        UIWindow *window = [UIApplication sharedApplication].keyWindow;
+        
+        if ([[UIScreen mainScreen] respondsToSelector:@selector(scale)])
+            UIGraphicsBeginImageContextWithOptions(window.bounds.size, NO, [UIScreen mainScreen].scale);
+        else
+            UIGraphicsBeginImageContext(window.bounds.size);
+        
+        [self.view.layer renderInContext:UIGraphicsGetCurrentContext()];
+        UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
+        UIGraphicsEndImageContext();
+        
+        UIImageWriteToSavedPhotosAlbum(image, nil, nil, nil);
+        //Show Alert
+        UIAlertView *alert = [[UIAlertView alloc]
+                              initWithTitle:@"Saving image"
+                              message:@"Image was succesfully saved!"
+                              delegate:self
+                              cancelButtonTitle:@"OK"
+                              otherButtonTitles:@"Cancel",nil];
+        [alert show];
+    }
+    @catch(NSException* e){
+        NSLog(@"Exception: %@", e);
+    }
+
+}
+- (IBAction)changeMapType:(id)sender {
+    @try{
+    if ([mapTypeControl selectedSegmentIndex]==0){
+        _map.mapType = MKMapTypeStandard;
+        
+    }
+    else if ([mapTypeControl selectedSegmentIndex]==1){
+        _map.mapType = MKMapTypeSatellite;
+    }
+    else if ([mapTypeControl selectedSegmentIndex]==2){
+        _map.mapType=MKMapTypeHybrid;
+    }
+    }
+    @catch(NSException* e){
+        NSLog(@"Exception: %@", e);
+    }
+}
+
+//end S.V. Code
 
 @end

@@ -29,6 +29,9 @@
 //Sasha
 @property (nonatomic, strong) UILongPressGestureRecognizer * longPressGestureRecognizer;
 @property (strong, nonatomic) UITextField *dist;
+//Begin V.S. Code
+@property (weak, nonatomic) IBOutlet UISegmentedControl *mapTypeControl;
+//End V.S. Code
 
 - (void) navigation:(NSNotification *)n;
 @end
