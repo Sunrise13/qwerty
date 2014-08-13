@@ -472,6 +472,7 @@ static Route route;
     
 }
 //begin V.S. Code
+//Get screenshot of mapView
 - (IBAction)getMapScreenShot {
     @try{
         UIWindow *window = [UIApplication sharedApplication].keyWindow;
@@ -517,6 +518,142 @@ static Route route;
         NSLog(@"Exception: %@", e);
     }
 }
+//Initialize annotations
+-(MKAnnotationView *)mapView:(MKMapView *)mapView viewForAnnotation:(id<MKAnnotation>)annotation
+{
+    MKPinAnnotationView *aView= [[MKPinAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:@"pin1"];
+    if (aView == nil) {
+        aView.annotation = annotation;
+    }
+    aView.animatesDrop=YES;
+    aView.canShowCallout = YES;
+    aView.rightCalloutAccessoryView =  [UIButton buttonWithType:UIButtonTypeInfoDark];
+    aView.calloutOffset = CGPointMake(-10, 5);
+    UIImageView *imView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 48, 48)];
+    imView.image =[UIImage imageNamed:@"city_small.png"];
+    aView.leftCalloutAccessoryView = imView;
+    return aView;
+}
+//Select annotation event
+-(void)mapView:(MKMapView *)mapView1 didSelectAnnotationView:(MKAnnotationView *)view
+{
+    @try{
+        NSLog(@"select");
+        MKMapSnapshotOptions *options = [[MKMapSnapshotOptions alloc] init];
+        CGPoint cgp = CGPointMake(view.center.x*0.3, view.center.y*0.3);
+        CLLocationCoordinate2D cllc_cd = [((MKMapView *)mapView1) convertPoint:cgp toCoordinateFromView:(MKAnnotationView *)view];
+        
+        MKCoordinateSpan mkc_spn = MKCoordinateSpanMake(0.2, 0.2);
+        options.region = MKCoordinateRegionMake((CLLocationCoordinate2D)cllc_cd, (MKCoordinateSpan)mkc_spn);
+        options.scale =[UIScreen mainScreen].scale;
+        //options.size = mapView1.frame.size; //original size of mapView
+        options.size = CGSizeMake(300, 300);
+        UIImage *uimage = nil;
+        
+        MKMapSnapshotter *snapshotter = [[MKMapSnapshotter alloc] initWithOptions:options];
+        [snapshotter startWithCompletionHandler:^(MKMapSnapshot *snapshot, NSError *error) {
+            UIImage *image = snapshot.image;
+            UIImageWriteToSavedPhotosAlbum(image, nil, nil, nil);
+        }];
+        UIImageWriteToSavedPhotosAlbum(uimage, nil, nil, nil);
+        
+        UIImageView *imView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 100, 100)];
+        imView.image =uimage;
+        
+        //[(MKAnnotationView *)view setLeftCalloutAccessoryView:imView]; //to set view for Pin
+    }
+    @catch (NSException * e) {
+        NSLog(@"Exception: %@", e);
+    }
+}
+//Deselect annotation event
+-(void)mapView:(MKMapView *)mapView didDeselectAnnotationView:(MKAnnotationView *)view
+{
+    NSLog(@"Deselect");
+}
+//Click on pin event  popover view controller
+-(void)mapView:(MKMapView *)mapView annotationView:(MKAnnotationView *)view calloutAccessoryControlTapped:(UIControl *)control {
+    id <MKAnnotation> annotation = [view annotation];
+    if ([annotation isKindOfClass:[MKPointAnnotation class]])
+    {
+        NSLog(@"Map ");
+    }
+
+    //_pin_info = [[UIPopoverController alloc] initWithContentViewController:mapView];
+    //_pin_info.popoverContentSize = CGSizeMake(320.0, 400.0);
+    //[_pin_info presentPopoverFromRect:[(UIButton *)sender frame]  inView:self.view permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
+    /*UIViewController *PopoverView =[[UIViewController alloc] initWithNibName:@"UIViewController" bundle:nil];
+     _pin_info =[[UIPopoverController alloc] initWithContentViewController:PopoverView];
+     [_pin_info presentPopoverFromRect:CGRectMake(10, 10, 200, 300) inView:self.view permittedArrowDirections:UIPopoverArrowDirectionDown animated:YES];*/
+    
+     UIAlertView *alertView1 = [[UIAlertView alloc]  initWithTitle:view.annotation.title
+     message:[@"Do you want to find information about '" stringByAppendingFormat:@"%@%@", view.annotation.title, @"'?"]
+     delegate:self
+     cancelButtonTitle:@"OK"
+     otherButtonTitles:@"Cancel", nil];
+     [alertView1 show];
+}
+-(void)mapView:(MKMapView *)mapViewm annotationView:(MKAnnotationView *)view didChangeDragState:(MKAnnotationViewDragState)newState fromOldState:(MKAnnotationViewDragState)oldState
+{}
+
+//Events on alert buttons
+-(void) alertView:(UIAlertView *)alertView_1 clickedButtonAtIndex:(NSInteger)buttonIndex{
+    if (buttonIndex == 0) {
+        //NSURL *url1 = [NSURL URLWithString:[@"https://www.google.com.ua/?gws_rd=ssl#q=" stringByAppendingString: alertView_1.title]];
+        if ([[UIApplication sharedApplication]
+             canOpenURL:[NSURL URLWithString:[@"https://www.google.com.ua/?gws_rd=ssl#q=" stringByAppendingString: alertView_1.title]]])
+        {
+            [[UIApplication sharedApplication] openURL:[NSURL URLWithString:[@"https://www.google.com.ua/?gws_rd=ssl#q=" stringByAppendingString: alertView_1.title]]];
+        }
+       // [[UIApplication sharedApplication] openURL:[NSURL URLWithString:[@"https://www.google.com.ua/?gws_rd=ssl#q=" stringByAppendingString: alertView.title]]];
+    }
+    else if (buttonIndex == 1) {
+    }
+}
+
+#define CAL_MERCATOR_OFFSET 268435456
+#define CAL_MERCATOR_RADIUS 85445659.44705395
+#pragma mark -
+#pragma mark Map conversion methods
+- (double) calLongitudeToPixelSpaceX:(double) longitude {
+    return round(CAL_MERCATOR_OFFSET + CAL_MERCATOR_RADIUS * longitude * M_PI / 180.0);
+}
+- (double) calLatitudeToPixelSpaceY:(double) latitude {
+    return round(CAL_MERCATOR_OFFSET - CAL_MERCATOR_RADIUS * logf((1 + sinf(latitude * M_PI / 180.0)) / (1 - sinf(latitude * M_PI / 180.0))) / 2.0);
+}
+- (double) calPixelSpaceXToLongitude:(double) pixelX {
+    return ((round(pixelX) - CAL_MERCATOR_OFFSET) / CAL_MERCATOR_RADIUS) * 180.0 / M_PI;
+}
+- (double) calPixelSpaceYToLatitude:(double) pixelY {
+    return (M_PI / 2.0 - 2.0 * atan(exp((round(pixelY) - CAL_MERCATOR_OFFSET) / CAL_MERCATOR_RADIUS))) * 180.0 / M_PI;
+}
+- (MKCoordinateSpan) calCoordinateSpanWithMapView:(MKMapView *) mapView centerCoordinate:(CLLocationCoordinate2D) centerCoordinate andZoomLevel:(NSUInteger) zoomLevel {
+    // convert center coordiate to pixel space
+    double centerPixelX = [self calLongitudeToPixelSpaceX:centerCoordinate.longitude];
+    double centerPixelY = [self calLatitudeToPixelSpaceY:centerCoordinate.latitude];
+    // determine the scale value from the zoom level
+    NSInteger zoomExponent = 20 - zoomLevel;
+    double zoomScale = pow(2, zoomExponent);
+    // scale the map’s size in pixel space
+    CGSize mapSizeInPixels = mapView.bounds.size;
+    double scaledMapWidth = mapSizeInPixels.width * zoomScale;
+    double scaledMapHeight = mapSizeInPixels.height * zoomScale;
+    // figure out the position of the top-left pixel
+    double topLeftPixelX = centerPixelX - (scaledMapWidth / 2);
+    double topLeftPixelY = centerPixelY - (scaledMapHeight / 2);
+    // find delta between left and right longitudes
+    CLLocationDegrees minLng = [self calPixelSpaceXToLongitude:topLeftPixelX];
+    CLLocationDegrees maxLng = [self calPixelSpaceXToLongitude:topLeftPixelX + scaledMapWidth];
+    CLLocationDegrees longitudeDelta = maxLng - minLng;
+    // find delta between top and bottom latitudes
+    CLLocationDegrees minLat = [self calPixelSpaceYToLatitude:topLeftPixelY];
+    CLLocationDegrees maxLat = [self calPixelSpaceYToLatitude:topLeftPixelY + scaledMapHeight];
+    CLLocationDegrees latitudeDelta = -1 * (maxLat - minLat);
+    // create and return the lat/lng span
+    MKCoordinateSpan span = MKCoordinateSpanMake(latitudeDelta, longitudeDelta);
+    return span;
+}
+
 
 //end S.V. Code
 
