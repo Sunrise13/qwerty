@@ -458,10 +458,9 @@ static Route route;
     
     
     NSString *urlTemplate = nil;
-    //urlTemplate = @"http://mt0.google.com/vt/x={x}&y={y}&z={z}";
-    urlTemplate=@"http://otile1.mqcdn.com/tiles/1.0.0/map/{z}/{x}/{y}.png";
-    //http://static-maps.yandex.ru/1.x/?ll={x},{y}&size=450,450&z={z}&l=map
-    //urlTemplate=@"http://static-maps.yandex.ru/1.x/?ll={x},{y}&size=256,256&z={z}&l=map";
+    //urlTemplate = @"http://mt0.google.com/vt/x={x}&y={y}&z={z}";                          //Google Maps
+    urlTemplate=@"http://otile1.mqcdn.com/tiles/1.0.0/map/{z}/{x}/{y}.png";                 //MapQuest
+    //urlTemplate=@"http://static-maps.yandex.ru/1.x/?ll={x},{y}&size=256,256&z={z}&l=map"; //Yandex.Map
     self.tileOverlay = [[MapTileOverlay alloc] initWithURLTemplate:urlTemplate];
     
     
