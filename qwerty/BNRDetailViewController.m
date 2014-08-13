@@ -234,7 +234,7 @@ static Route route;
     __block CGFloat routeDistance = 0.0;
     __block CGFloat centerX = ((CLPlacemark *)(self.placemarks[[NSNumber numberWithInt:0]][0])).location.coordinate.latitude;
     __block CGFloat centerY = ((CLPlacemark *)(self.placemarks[[NSNumber numberWithInt:0]][0])).location.coordinate.longitude;
-    
+    __block int countFlags = 0;
     for(int i=0; i<=[pathes count]-2; i++)
     {
         
@@ -248,6 +248,7 @@ static Route route;
                 NSLog(@"Error %@", error.description);
             } else {
                 NSLog(@"create route with %d, and %d", i, i+1);
+                countFlags++;
                 _routeDetails = response.routes.lastObject;
                 routeDistance += _routeDetails.distance;
                 _map.delegate=self;
@@ -262,10 +263,11 @@ static Route route;
                 double maxY= ABS(((CLPlacemark *)(self.placemarks[[NSNumber numberWithInt:0]][0])).location.coordinate.longitude - centerY);
                 
                 
-                if (i==[pathes count]-2)
-                {
-                    [renderDistance appendString:[NSString stringWithFormat:@"%.2f", routeDistance*0.001]];
-                    self.dist.text = renderDistance;
+                    if (countFlags ==[pathes count]-1)
+                    {
+                        [renderDistance appendString:[NSString stringWithFormat:@"%.2f", routeDistance*0.001]];
+                        [renderDistance appendString:@"km"];
+                        self.dist.text = renderDistance;
                 
                     [self.map addSubview:self.dist];
                     centerX /= [pathes count];
