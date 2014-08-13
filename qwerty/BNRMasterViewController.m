@@ -12,8 +12,6 @@
 #import "pinItem.h"
 
 
-#import "DataManager.h"
-
 @interface BNRMasterViewController ()
 {
 }
@@ -44,12 +42,6 @@
         
         [super viewDidLoad];
         self.detailViewController = (BNRDetailViewController *)[[self.splitViewController.viewControllers lastObject] topViewController];
-        
-        //if([DataManager sharedManager])
-        //{
-        [[DataManager sharedManager] setupCoreData];
-        self.managedObjs=[[DataManager sharedManager] getManagedObjArray];
-        //}
         
         self.countriesList = [[NSMutableDictionary alloc] init];
         
