@@ -11,6 +11,7 @@
 #import "BNRAddViewController.h"
 #import "pinItem.h"
 
+
 #import "DataManager.h"
 
 @interface BNRMasterViewController ()
@@ -40,6 +41,32 @@
     {
         [[DataManager sharedManager] setupCoreData];
         self.managedObjs=[[DataManager sharedManager] getManagedObjArray];
+        
+        [super viewDidLoad];
+        self.detailViewController = (BNRDetailViewController *)[[self.splitViewController.viewControllers lastObject] topViewController];
+        
+        //if([DataManager sharedManager])
+        //{
+        [[DataManager sharedManager] setupCoreData];
+        self.managedObjs=[[DataManager sharedManager] getManagedObjArray];
+        //}
+        
+        self.countriesList = [[NSMutableDictionary alloc] init];
+        
+        for (pinItem *d in self.managedObjs)
+        {
+            
+            if ([self.countriesList objectForKey:d.country] == nil)
+            {
+                [self.countriesList setObject:[NSMutableArray new] forKey:d.country];
+                NSLog(@"%@\n", d.country);
+            }
+            
+            NSMutableArray *ar = [self.countriesList objectForKey:d.country];
+            [ar addObject:d.city];
+        }
+        self.countrySectionTitle = [[NSMutableArray alloc] init];
+        self.countrySectionTitle = [[self.countriesList allKeys] sortedArrayUsingSelector:@selector(localizedCaseInsensitiveCompare:)];
     }
 }
 
@@ -55,21 +82,64 @@
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-    return 1;
+        return [self.countrySectionTitle count];
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return [self.managedObjs count];
+    NSString *sectionTitle = [self.countrySectionTitle objectAtIndex:section];
+    NSArray *sectionCity = [self.countriesList objectForKey:sectionTitle];
+    return [sectionCity count];
 }
+
+
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
+{
+    //return [animalSectionTitle objectAtIndex:section];
+    
+    return [self.countrySectionTitle objectAtIndex:section];
+}
+
+
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
+{
+    return 30;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return 40.0f;
+}
+
+
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
+{
+    
+    UIView *header = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 220, 0)];
+    header.autoresizingMask = UIViewAutoresizingFlexibleWidth;
+    
+    UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(5, 5, 220, 30)];
+    label.autoresizingMask=UIViewAutoresizingFlexibleWidth;
+    label.font = [UIFont boldSystemFontOfSize:25];
+    label.backgroundColor = [UIColor groupTableViewBackgroundColor];
+    label.text = [self tableView:tableView titleForHeaderInSection:section];
+    
+    [header addSubview:label];
+    
+    return header;
+}
+
+
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell" forIndexPath:indexPath];
-    cell.selectionStyle=UITableViewCellSelectionStyleNone;
     
-    NSString *cityName = ((pinItem *)self.managedObjs[indexPath.row]).city ;
-    cell.textLabel.text = cityName;
+    NSString *sectionTitle = [self.countrySectionTitle objectAtIndex:indexPath.section];
+    NSArray *sectionCity = [self.countriesList objectForKey:sectionTitle];
+    NSString *cities = [sectionCity objectAtIndex:indexPath.row];
+    cell.textLabel.text = cities;
+    //cell.imageView.image = [UIImage imageNamed:[self getImageFilename:sectionTitle]];
     
     return cell;
 }
@@ -124,6 +194,23 @@
 
 - (void)reloadData
 {
+    self.countriesList = [[NSMutableDictionary alloc] init];
+    
+    for (pinItem *d in self.managedObjs)
+    {
+        
+        if ([self.countriesList objectForKey:d.country] == nil)
+        {
+            [self.countriesList setObject:[NSMutableArray new] forKey:d.country];
+            NSLog(@"%@\n", d.country);
+        }
+        
+        NSMutableArray *ar = [self.countriesList objectForKey:d.country];
+        [ar addObject:d.city];
+    }
+    self.countrySectionTitle = [[NSMutableArray alloc] init];
+    self.countrySectionTitle = [[self.countriesList allKeys] sortedArrayUsingSelector:@selector(localizedCaseInsensitiveCompare:)];
+    
         [self.tableView reloadData];
 }
 
@@ -147,13 +234,13 @@
 
 -(void) tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if (editingStyle == UITableViewCellEditingStyleDelete)
-    {
-        [[[DataManager sharedManager] context] deleteObject:self.managedObjs[indexPath.row]];
-        [_managedObjs removeObjectAtIndex:indexPath.row];
-        
-        [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationLeft];
-    }
+//    if (editingStyle == UITableViewCellEditingStyleDelete)
+//    {
+//        [[[DataManager sharedManager] context] deleteObject:self.managedObjs[indexPath.row]];
+//        [_managedObjs removeObjectAtIndex:indexPath.row];
+//        
+//        [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationLeft];
+//    }
     
 }
 @end

@@ -19,6 +19,9 @@
 @property (weak, nonatomic) BNRDetailViewController *detailViewController;
 @property (weak, nonatomic) IBOutlet UITableView *table;
 @property (nonatomic, strong) NSMutableArray *managedObjs;
+
+@property (nonatomic, strong) NSMutableDictionary *countriesList;
+@property (nonatomic, strong)  NSArray *countrySectionTitle;
 //@property (nonatomic, strong) DataManager *db;
 
 @end

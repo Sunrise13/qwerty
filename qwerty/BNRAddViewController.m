@@ -71,6 +71,7 @@ CLPlacemark *thePlacemark;
     item.lat = lat;
     item.lon = lon;
     item.city = general.locality;
+    item.country = general.country;
     
     
     [context save:nil];

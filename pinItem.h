@@ -13,6 +13,7 @@
 @interface pinItem : NSManagedObject
 
 @property (nonatomic, retain) NSString * city;
+@property (nonatomic, retain) NSString * country;
 @property (nonatomic, retain) NSNumber * lon;
 @property (nonatomic, retain) NSNumber * lat;
 

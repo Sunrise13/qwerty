@@ -12,6 +12,7 @@
 @implementation pinItem
 
 @dynamic city;
+@dynamic country;
 @dynamic lon;
 @dynamic lat;
 

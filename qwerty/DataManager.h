@@ -11,7 +11,6 @@
 
 @interface DataManager : NSObject
 
-@property (nonatomic, retain) NSString *someProperty;
 @property (nonatomic, readonly) NSManagedObjectContext *context;
 @property (nonatomic, readonly) NSManagedObjectModel *model;
 @property (nonatomic, readonly) NSPersistentStoreCoordinator *coordinator;
