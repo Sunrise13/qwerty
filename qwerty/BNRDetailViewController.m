@@ -235,7 +235,7 @@ static Route route;
     __block CGFloat routeDistance = 0.0;
     __block CGFloat centerX = ((CLPlacemark *)(self.placemarks[[NSNumber numberWithInt:0]][0])).location.coordinate.latitude;
     __block CGFloat centerY = ((CLPlacemark *)(self.placemarks[[NSNumber numberWithInt:0]][0])).location.coordinate.longitude;
-    
+    __block int countFlags = 0;
     for(int i=0; i<=[pathes count]-2; i++)
     {
         
@@ -249,6 +249,7 @@ static Route route;
                 NSLog(@"Error %@", error.description);
             } else {
                 NSLog(@"create route with %d, and %d", i, i+1);
+                countFlags++;
                 _routeDetails = response.routes.lastObject;
                 routeDistance += _routeDetails.distance;
                 _map.delegate=self;
@@ -263,10 +264,11 @@ static Route route;
                 double maxY= ABS(((CLPlacemark *)(self.placemarks[[NSNumber numberWithInt:0]][0])).location.coordinate.longitude - centerY);
                 
                 
-                if (i==[pathes count]-2)
-                {
-                    [renderDistance appendString:[NSString stringWithFormat:@"%.2f", routeDistance*0.001]];
-                    self.dist.text = renderDistance;
+                    if (countFlags ==[pathes count]-1)
+                    {
+                        [renderDistance appendString:[NSString stringWithFormat:@"%.2f", routeDistance*0.001]];
+                        [renderDistance appendString:@"km"];
+                        self.dist.text = renderDistance;
                 
                     [self.map addSubview:self.dist];
                     centerX /= [pathes count];
@@ -459,10 +461,9 @@ static Route route;
     
     
     NSString *urlTemplate = nil;
-    //urlTemplate = @"http://mt0.google.com/vt/x={x}&y={y}&z={z}";
-    urlTemplate=@"http://otile1.mqcdn.com/tiles/1.0.0/map/{z}/{x}/{y}.png";
-    //http://static-maps.yandex.ru/1.x/?ll={x},{y}&size=450,450&z={z}&l=map
-    //urlTemplate=@"http://static-maps.yandex.ru/1.x/?ll={x},{y}&size=256,256&z={z}&l=map";
+    //urlTemplate = @"http://mt0.google.com/vt/x={x}&y={y}&z={z}";                          //Google Maps
+    urlTemplate=@"http://otile1.mqcdn.com/tiles/1.0.0/map/{z}/{x}/{y}.png";                 //MapQuest
+    //urlTemplate=@"http://static-maps.yandex.ru/1.x/?ll={x},{y}&size=256,256&z={z}&l=map"; //Yandex.Map
     self.tileOverlay = [[MapTileOverlay alloc] initWithURLTemplate:urlTemplate];
     
     

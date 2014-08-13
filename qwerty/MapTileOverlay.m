@@ -43,8 +43,8 @@
     }
     else
     {
-        NSString *str=[NSString stringWithFormat:@"http://otile1.mqcdn.com/tiles/1.0.0/map/%ld/%ld/%ld.png" ,(long)path.z,(long)path.x, (long)path.y];
-        NSURL *url=[[NSURL alloc] initWithString:str];
+        
+        NSURL *url=[self URLForTilePath:path];
         NSMutableURLRequest *req=[[NSMutableURLRequest alloc]initWithURL:url];
         req.timeoutInterval=5.0;
         NSURLConnection *con=[NSURLConnection alloc];
